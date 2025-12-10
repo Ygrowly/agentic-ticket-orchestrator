@@ -17,7 +17,17 @@ NC='\033[0m'
 MYSQL_HOST="localhost"
 MYSQL_PORT="3306"
 MYSQL_USER="root"
-MYSQL_PASSWORD=""
+
+# 如果环境变量未设置，则尝试交互式获取
+if [ -z "$MYSQL_PASSWORD" ]; then
+    echo -e "${YELLOW}请输入 MySQL root 用户密码 (直接回车使用默认值: 123456):${NC}"
+    read -s MYSQL_PASSWORD
+    echo ""
+    
+    if [ -z "$MYSQL_PASSWORD" ]; then
+        MYSQL_PASSWORD="123456"
+    fi
+fi
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
@@ -194,7 +204,7 @@ echo ""
 # 调整 spark-link 数据库配置以适配本地环境
 echo -e "${YELLOW}[7/7] 调整本地开发环境配置...${NC}"
 echo -e "${BLUE}更新 paiflow-link.tools_schema 中的 AITools 服务地址...${NC}"
-mysql -h"$MYSQL_HOST" -P"$MYSQL_PORT" -u"$MYSQL_USER" -p"$MYSQL_PASSWORD" spark-link <<EOF
+mysql -h"$MYSQL_HOST" -P"$MYSQL_PORT" -u"$MYSQL_USER" -p"$MYSQL_PASSWORD" paiflow-link <<EOF
 UPDATE tools_schema
 SET open_api_schema = REPLACE(
   open_api_schema,
