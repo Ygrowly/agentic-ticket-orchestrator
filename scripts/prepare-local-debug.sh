@@ -78,9 +78,9 @@ REDIS_PORT=6379
 REDIS_DATABASE_CONSOLE=1
 
 # Workflow 服务 URL (Java 版本)
-WORKFLOW_CHAT_URL=http://localhost:7881/api/v1/workflow/chat/stream
-WORKFLOW_DEBUG_URL=http://localhost:7881/api/v1/workflow/chat/stream
-WORKFLOW_RESUME_URL=http://localhost:7881/api/v1/workflow/chat/resume
+WORKFLOW_CHAT_URL=http://localhost:7880/api/v1/workflow/chat/stream
+WORKFLOW_DEBUG_URL=http://localhost:7880/api/v1/workflow/chat/stream
+WORKFLOW_RESUME_URL=http://localhost:7880/api/v1/workflow/chat/resume
 WORKFLOW_URL=http://localhost:7880
 
 # Workflow 配置服务

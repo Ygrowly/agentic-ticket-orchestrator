@@ -53,9 +53,9 @@ MINIO_SECRET_KEY=minioadmin
 MINIO_BUCKET=astron
 
 # Workflow 服务 URL (指向 Java 版本)
-WORKFLOW_CHAT_URL=http://localhost:7881/api/v1/workflow/chat/stream
-WORKFLOW_DEBUG_URL=http://localhost:7881/api/v1/workflow/chat/stream
-WORKFLOW_RESUME_URL=http://localhost:7881/api/v1/workflow/chat/resume
+WORKFLOW_CHAT_URL=http://localhost:7880/api/v1/workflow/chat/stream
+WORKFLOW_DEBUG_URL=http://localhost:7880/api/v1/workflow/chat/stream
+WORKFLOW_RESUME_URL=http://localhost:7880/api/v1/workflow/chat/resume
 
 # Casdoor 配置
 CASDOOR_ENDPOINT=http://localhost:7001
@@ -94,9 +94,9 @@ POSTGRES_PASSWORD=postgres123;
 REDIS_HOST=localhost;
 REDIS_PORT=6379;
 REDIS_PASSWORD=redis123;
-WORKFLOW_CHAT_URL=http://localhost:7881/api/v1/workflow/chat/stream;
-WORKFLOW_DEBUG_URL=http://localhost:7881/api/v1/workflow/chat/stream;
-WORKFLOW_RESUME_URL=http://localhost:7881/api/v1/workflow/chat/resume
+WORKFLOW_CHAT_URL=http://localhost:7880/api/v1/workflow/chat/stream;
+WORKFLOW_DEBUG_URL=http://localhost:7880/api/v1/workflow/chat/stream;
+WORKFLOW_RESUME_URL=http://localhost:7880/api/v1/workflow/chat/resume
 ```
 
 5. **VM Options** (可选，用于调试):

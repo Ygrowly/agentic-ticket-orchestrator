@@ -161,8 +161,8 @@ cat /tmp/java-workflow-response.json
 ========================================
 
 服务信息：
-  端口: 7881
-  健康检查: http://localhost:7881/actuator/health
+  端口: 7880
+  健康检查: http://localhost:7880/actuator/health
   日志: docker logs -f astron-agent-core-workflow-java
 ```
 

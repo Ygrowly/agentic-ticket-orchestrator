@@ -274,7 +274,7 @@ make format && make check && make test
 
 The project supports **two independent Workflow implementations** running side-by-side:
 - **Python Version** (Port 7880) - Stable production baseline, always kept functional
-- **Java Version** (Port 7881) - Development version, can be modified freely
+- **Java Version** (Port 7880) - Development version, can be modified freely
 
 ### 🔧 Quick Commands
 

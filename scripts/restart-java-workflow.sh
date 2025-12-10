@@ -110,7 +110,7 @@ echo -e "${BLUE}等待服务启动...${NC}"
 sleep 5
 
 # 健康检查
-HEALTH_URL="http://localhost:7881/actuator/health"
+HEALTH_URL="http://localhost:7880/actuator/health"
 MAX_RETRIES=30
 RETRY_COUNT=0
 
@@ -123,7 +123,7 @@ while [ $RETRY_COUNT -lt $MAX_RETRIES ]; do
         echo -e "${GREEN}========================================${NC}"
         echo ""
         echo -e "${BLUE}服务信息：${NC}"
-        echo -e "  端口: ${GREEN}7881${NC}"
+        echo -e "  端口: ${GREEN}7880${NC}"
         echo -e "  健康检查: ${GREEN}$HEALTH_URL${NC}"
         echo -e "  日志: ${YELLOW}docker logs -f astron-agent-core-workflow-java${NC}"
         echo ""
