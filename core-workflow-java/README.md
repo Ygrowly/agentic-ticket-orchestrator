@@ -85,10 +85,10 @@ window操作系统，docker本地部署步骤
 ```bash
 # 为了避免docker内应用，无法直接访问本机的mysql、redis、minio，我们通过传入环境参数来替换默认的配置
 # 前台执行
-docker run -p 7881:7881 -e OSS_ENDPOINT=http://host.docker.internal:9000 -e OSS_REMOTE_ENDPOINT=http://host.docker.internal:9000 -e MYSQL_HOST=host.docker.internal -e REDIS_HOST=host.docker.internal -e AITOOLS_URL=http://host.docker.internal:18888 core-workflow-java
+docker run -p 7880:7880 -e OSS_ENDPOINT=http://host.docker.internal:9000 -e OSS_REMOTE_ENDPOINT=http://host.docker.internal:9000 -e MYSQL_HOST=host.docker.internal -e REDIS_HOST=host.docker.internal -e AITOOLS_URL=http://host.docker.internal:18888 core-workflow-java
 
 # 后台执行，通过添加 -d 来表示后台运行(detached mode)
-docker run -d -p 7881:7881 -e OSS_ENDPOINT=http://host.docker.internal:9000 -e OSS_REMOTE_ENDPOINT=http://host.docker.internal:9000 -e MYSQL_HOST=host.docker.internal -e REDIS_HOST=host.docker.internal -e AITOOLS_URL=http://host.docker.internal:18888 core-workflow-java
+docker run -d -p 7880:7880 -e OSS_ENDPOINT=http://host.docker.internal:9000 -e OSS_REMOTE_ENDPOINT=http://host.docker.internal:9000 -e MYSQL_HOST=host.docker.internal -e REDIS_HOST=host.docker.internal -e AITOOLS_URL=http://host.docker.internal:18888 core-workflow-java
 ```
 
 ## 核心概念

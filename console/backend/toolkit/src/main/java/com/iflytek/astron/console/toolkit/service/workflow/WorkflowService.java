@@ -1356,6 +1356,7 @@ public class WorkflowService extends ServiceImpl<WorkflowMapper, Workflow> {
         try {
             realEventSource.connect(OkHttpUtil.getHttpClient());
             latch.await();
+            log.info("build response: {}", wholeRespJson);
             String message = wholeRespJson.getString("message");
             if (StringUtils.isNotBlank(message)) {
                 int code = Integer.parseInt(message.substring(0, message.indexOf(":")));
@@ -3096,12 +3097,8 @@ public class WorkflowService extends ServiceImpl<WorkflowMapper, Workflow> {
             if (isEnabled) {
                 buildParams(bizReq, maxRounds, sysReq);
             }
-            // xxx 这里改造为支持使用java版本的工作流
-            String workflowHost = "java".equals(SpringUtils.getConfig("workflow.version")) ? apiUrl.getJavaWorkflow() : apiUrl.getWorkflow();
-            if (StringUtils.isBlank(workflowHost)) {
-                workflowHost = apiUrl.getWorkflow();
-            }
-            String url = workflowHost.concat("/workflow/v1/debug/chat/completions");
+            // 这里准备访问工作流
+            String url = apiUrl.getWorkflow().concat("/workflow/v1/debug/chat/completions");
             String reqBody = JacksonUtil.toJSONString(sysReq, JacksonUtil.NON_NULL_OBJECT_MAPPER);
 
             SseEmitter sseEmitter = SseEmitterUtil.create(bizReq.getChatId(), 1800_000L);

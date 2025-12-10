@@ -20,6 +20,7 @@ public class WorkflowApiRequest {
     // Outer debugger field
     private boolean stream;
     private String version;
+    private Long chatId;
 
     public WorkflowApiRequest(String flowId, String uid, JSONObject input, LinkedList<ChatRequestDto> history, String version) {
         this.flow_id = flowId;

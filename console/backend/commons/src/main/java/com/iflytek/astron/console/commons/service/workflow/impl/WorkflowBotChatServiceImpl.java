@@ -139,6 +139,7 @@ public class WorkflowBotChatServiceImpl implements WorkflowBotChatService {
         ChatRequestDtoList requestDtoList = chatHistoryService.getHistory(uid, chatId, reqList);
         filterContent(requestDtoList);
         WorkflowApiRequest workflowApiRequest = new WorkflowApiRequest(flowId, uid, inputs, requestDtoList.getMessages(), workflowVersion);
+        workflowApiRequest.setChatId(chatId);
         log.info("workflowApiRequest:{}", workflowApiRequest);
         RequestBody body = RequestBody.create(JSON.toJSONString(workflowApiRequest), MediaType.parse("application/json; charset=utf-8"));
 
@@ -148,7 +149,7 @@ public class WorkflowBotChatServiceImpl implements WorkflowBotChatService {
         // If not submitted for publishing, use debug interface, otherwise use chat interface
         boolean isDebug = false;
         if (market == null || ShelfStatusEnum.isOffShelf(market.getBotStatus())) {
-            apiUsedUrl = buildDebugUrl();
+            apiUsedUrl = debugUrl;
             isDebug = true;
         } else {
             apiUsedUrl = chatUrl;
@@ -180,19 +181,6 @@ public class WorkflowBotChatServiceImpl implements WorkflowBotChatService {
         WorkflowClient client = new WorkflowClient(apiUsedUrl, appId, appKey, appSecret, body);
         WorkflowListener listener = new WorkflowListener(client, chatReqRecords, sseId, wssListenerService, isDebug, sseEmitter);
         client.createWebSocketConnect(listener);
-    }
-
-
-    /**
-     * 这里实现 Java Workflow / Python Workflow 工作流的切换
-     * @return
-     */
-    private String buildDebugUrl() {
-        if ("java".equals(SpringContextHolder.getConfig("workflow.version"))) {
-            return SpringContextHolder.getConfig("api.url.javaWorkFlow").concat("/workflow/v1/debug/chat/completions");
-        } else {
-            return debugUrl;
-        }
     }
 
     /**

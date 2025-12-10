@@ -113,16 +113,16 @@ public class WorkflowFrontendController {
     @Data
     public static class FrontendWorkflowRequest {
 
-        @JsonProperty("flowId")
+        @JsonProperty("flow_id")
         private String flowId;
 
-        @JsonProperty("inputs")
+        @JsonProperty("parameters")
         private Map<String, Object> inputs;
 
         @JsonProperty("chatId")
         private String chatId;
 
-        @JsonProperty("userId")
+        @JsonProperty("uid")
         private String userId;
 
         @JsonProperty("regen")

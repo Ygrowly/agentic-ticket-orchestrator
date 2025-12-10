@@ -34,15 +34,13 @@ spark:
 
 # Workflow 本地服务地址
 workflow:
-  version: ${WORKFLOW_VERSION:java}
-  chatUrl: http://localhost:7880/api/v1/workflow/chat/stream
-  debugUrl: http://localhost:7880/api/v1/workflow/chat/stream
-  resumeUrl: http://localhost:7880/api/v1/workflow/chat/resume
+  chatUrl: ${api.url.workflow}/api/v1/workflow/chat/stream
+  debugUrl: ${api.url.workflow}/api/v1/workflow/chat/stream
+  resumeUrl: ${api.url.workflow}/api/v1/workflow/chat/resume
 
 api:
   url:
     workflow: ${WORKFLOW_URL:http://127.0.0.1:7880}
-    javaWorkFlow: ${JAVA_WORKFLOW_URL:http://127.0.0.1:7881}
 
 # Common 通用配置（用于 Workflow 节点的默认 AK/SK）
 common:
@@ -63,8 +61,8 @@ maas:
   cloneWorkFlow: http://localhost:8080/workflow/internal-clone
   getInputs: http://localhost:8080/workflow/get-inputs-info
   canPublishUrl: http://localhost:8080/workflow/can-publish
-  publishApi: ${WORKFLOW_URL:http://127.0.0.1:7880}/workflow/v1/publish
-  authApi: ${WORKFLOW_URL:http://127.0.0.1:7880}/workflow/v1/auth
+  publishApi: ${api.url.workflow}/workflow/v1/publish
+  authApi: ${api.url.workflow}/workflow/v1/auth
   mcpRegister: http://localhost:8080/workflow/release
   workflowConfig: http://localhost:8080/workflow/get-flow-advanced-config
   workflowVersion: http://localhost:8080/workflow/version

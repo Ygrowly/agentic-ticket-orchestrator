@@ -49,7 +49,7 @@ public class WorkflowEntity {
      * 工作流版本
      */
     @TableField("version")
-    private Integer version;
+    private String version;
 
     /**
      * 工作流发布状态
