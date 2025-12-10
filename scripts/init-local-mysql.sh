@@ -116,16 +116,27 @@ DATABASES=(
     "paiflow-tenant"
 )
 
+# 使用配置文件来避免命令行密码警告
+MYSQL_CNF=$(mktemp)
+echo "[client]" > "$MYSQL_CNF"
+echo "user=$MYSQL_USER" >> "$MYSQL_CNF"
+echo "password=$MYSQL_PASSWORD" >> "$MYSQL_CNF"
+echo "host=$MYSQL_HOST" >> "$MYSQL_CNF"
+echo "port=$MYSQL_PORT" >> "$MYSQL_CNF"
+
+# 清理临时文件
+trap 'rm -f "$MYSQL_CNF"' EXIT
+
 for db in "${DATABASES[@]}"; do
     if [ "$DROP_EXISTING" = true ]; then
         echo -e "${RED}删除现有数据库: ${db}${NC}"
-        mysql -h"$MYSQL_HOST" -P"$MYSQL_PORT" -u"$MYSQL_USER" -p"$MYSQL_PASSWORD" <<EOF
+        mysql --defaults-extra-file="$MYSQL_CNF" <<EOF
 DROP DATABASE IF EXISTS \`${db}\`;
 EOF
     fi
     
     echo -e "${BLUE}创建数据库: ${db}${NC}"
-    mysql -h"$MYSQL_HOST" -P"$MYSQL_PORT" -u"$MYSQL_USER" -p"$MYSQL_PASSWORD" <<EOF
+    mysql --defaults-extra-file="$MYSQL_CNF" <<EOF
 CREATE DATABASE IF NOT EXISTS \`${db}\` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 EOF
     echo -e "${GREEN}✓ ${db} 创建成功${NC}"
@@ -137,7 +148,7 @@ echo -e "${YELLOW}[3/6] 导入 paiflow-console 数据库表结构...${NC}"
 if [ -f "$SQL_DIR/schema.sql" ]; then
     echo -e "${BLUE}正在导入: schema.sql (可能需要几分钟)...${NC}"
     # 修改为检查 MySQL 命令本身的退出状态，而不是管道的输出
-    if mysql -h"$MYSQL_HOST" -P"$MYSQL_PORT" -u"$MYSQL_USER" -p"$MYSQL_PASSWORD" paiflow-console < "$SQL_DIR/schema.sql" 2>&1 | tee /tmp/mysql_import.log | grep -v "Warning" >/dev/null; then
+    if mysql --defaults-extra-file="$MYSQL_CNF" paiflow-console < "$SQL_DIR/schema.sql" 2>&1 | tee /tmp/mysql_import.log | grep -v "Warning" >/dev/null; then
         echo -e "${GREEN}✓ schema.sql 导入成功${NC}"
     else
         MYSQL_EXIT_CODE=${PIPESTATUS[0]}
@@ -162,7 +173,7 @@ echo ""
 echo -e "${YELLOW}[4/6] 导入 paiflow-workflow 表结构...${NC}"
 if [ -f "$SQL_DIR/workflow.sql" ]; then
     echo -e "${BLUE}正在导入: workflow.sql${NC}"
-    mysql -h"$MYSQL_HOST" -P"$MYSQL_PORT" -u"$MYSQL_USER" -p"$MYSQL_PASSWORD" paiflow-workflow < "$SQL_DIR/workflow.sql"
+    mysql --defaults-extra-file="$MYSQL_CNF" paiflow-workflow < "$SQL_DIR/workflow.sql"
     echo -e "${GREEN}✓ workflow.sql 导入成功${NC}"
 else
     echo -e "${YELLOW}⚠ workflow.sql 文件不存在，跳过${NC}"
@@ -173,7 +184,7 @@ echo ""
 echo -e "${YELLOW}[5/6] 导入 paiflow-link 表结构...${NC}"
 if [ -f "$SQL_DIR/link.sql" ]; then
     echo -e "${BLUE}正在导入: link.sql${NC}"
-    mysql -h"$MYSQL_HOST" -P"$MYSQL_PORT" -u"$MYSQL_USER" -p"$MYSQL_PASSWORD" paiflow-link < "$SQL_DIR/link.sql"
+    mysql --defaults-extra-file="$MYSQL_CNF" paiflow-link < "$SQL_DIR/link.sql"
     echo -e "${GREEN}✓ link.sql 导入成功${NC}"
 else
     echo -e "${YELLOW}⚠ link.sql 文件不存在，跳过${NC}"
@@ -193,7 +204,7 @@ for entry in "${SQL_FILES[@]}"; do
     
     if [ -f "$SQL_DIR/$sql_file" ]; then
         echo -e "${BLUE}正在导入: $sql_file → $db_name${NC}"
-        mysql -h"$MYSQL_HOST" -P"$MYSQL_PORT" -u"$MYSQL_USER" -p"$MYSQL_PASSWORD" "$db_name" < "$SQL_DIR/$sql_file"
+        mysql --defaults-extra-file="$MYSQL_CNF" "$db_name" < "$SQL_DIR/$sql_file"
         echo -e "${GREEN}✓ $sql_file 导入成功${NC}"
     else
         echo -e "${YELLOW}⚠ $sql_file 文件不存在，跳过${NC}"
@@ -204,7 +215,7 @@ echo ""
 # 调整 spark-link 数据库配置以适配本地环境
 echo -e "${YELLOW}[7/7] 调整本地开发环境配置...${NC}"
 echo -e "${BLUE}更新 paiflow-link.tools_schema 中的 AITools 服务地址...${NC}"
-mysql -h"$MYSQL_HOST" -P"$MYSQL_PORT" -u"$MYSQL_USER" -p"$MYSQL_PASSWORD" paiflow-link <<EOF
+mysql --defaults-extra-file="$MYSQL_CNF" paiflow-link <<EOF
 UPDATE tools_schema
 SET open_api_schema = REPLACE(
   open_api_schema,
@@ -242,12 +253,12 @@ fi
 # 验证数据库
 echo -e "${YELLOW}验证数据库创建...${NC}"
 echo -e "${CYAN}已创建的数据库:${NC}"
-mysql -h"$MYSQL_HOST" -P"$MYSQL_PORT" -u"$MYSQL_USER" -p"$MYSQL_PASSWORD" -e "SHOW DATABASES;" | grep -E "astron|spark"
+mysql --defaults-extra-file="$MYSQL_CNF" -e "SHOW DATABASES;" | grep -E "paiflow"
 echo ""
 
 # 显示主要表
 echo -e "${CYAN}paiflow-console 主要表:${NC}"
-mysql -h"$MYSQL_HOST" -P"$MYSQL_PORT" -u"$MYSQL_USER" -p"$MYSQL_PASSWORD" astron_console -e "SHOW TABLES;" | head -20
+mysql --defaults-extra-file="$MYSQL_CNF" paiflow-console -e "SHOW TABLES;" | head -20
 echo ""
 
 echo -e "${GREEN}========================================${NC}"

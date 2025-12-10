@@ -21,6 +21,9 @@ import java.util.concurrent.ConcurrentHashMap;
  * This class manages the streaming of workflow execution events, handles node
  * lifecycle callbacks, and coordinates with various queues for ordered output.
  * It provides methods for different stages of workflow and node execution.
+ * 
+ * @author 二哥编程星球&Java进阶之路（沉默王二&一灰）
+ * @version 1.0.0
  */
 @Slf4j
 public class ChatCallBacks {

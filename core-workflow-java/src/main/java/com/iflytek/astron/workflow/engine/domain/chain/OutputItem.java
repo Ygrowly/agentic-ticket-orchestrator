@@ -8,7 +8,13 @@ import lombok.NoArgsConstructor;
 import java.util.Map;
 
 /**
- * Output item with name and schema
+ * Output item with name and schema.
+ * 
+ * This class represents a single output item of a node in a workflow,
+ * including the output name, schema definition, and whether it is required.
+ * 
+ * @author 二哥编程星球&Java进阶之路（沉默王二&一灰）
+ * @version 1.0.0
  */
 @Data
 @NoArgsConstructor

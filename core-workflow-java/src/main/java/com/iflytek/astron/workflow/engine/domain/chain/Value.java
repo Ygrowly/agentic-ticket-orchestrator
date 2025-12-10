@@ -6,7 +6,13 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * Represents a value that can be either a literal or a reference to another node
+ * Represents a value that can be either a literal or a reference to another node.
+ * 
+ * This class is used to represent the input values of a node in a workflow,
+ * which can either be a direct literal value or a reference to an output variable of another node.
+ * 
+ * @author 二哥编程星球&Java进阶之路（沉默王二&一灰）
+ * @version 1.0.0
  */
 @Data
 @NoArgsConstructor

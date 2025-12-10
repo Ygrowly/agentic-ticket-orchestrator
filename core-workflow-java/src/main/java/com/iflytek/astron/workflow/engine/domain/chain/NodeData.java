@@ -11,7 +11,13 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Node data containing configuration and parameters
+ * Node data containing configuration and parameters.
+ * 
+ * This class represents the data associated with a single node in a workflow,
+ * including input parameters, node metadata, and node-specific parameters.
+ * 
+ * @author 二哥编程星球&Java进阶之路（沉默王二&一灰）
+ * @version 1.0.0
  */
 @Data
 @NoArgsConstructor

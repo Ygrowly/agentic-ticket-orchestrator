@@ -9,8 +9,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
- * Model service client
- * Calls console-hub's model API to execute LLM inference
+ * Model service client.
+ * Calls console-hub's model API to execute LLM inference.
+ * 
+ * @author 二哥编程星球&Java进阶之路（沉默王二&一灰）
+ * @version 1.0.0
  */
 @Slf4j
 @Service
@@ -21,8 +24,8 @@ public class ModelServiceClient {
 
 
     /**
-     * Call LLM for chat completion
-     *
+     * Call LLM for chat completion.
+     *      
      * @param req model ID from database
      */
     public LlmResVo chatCompletion(LlmReqBo req, LlmCallback callback) {

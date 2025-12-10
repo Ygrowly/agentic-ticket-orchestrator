@@ -6,7 +6,13 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * Edge connecting two nodes in the workflow
+ * Edge connecting two nodes in the workflow.
+ * 
+ * This class represents a directed connection between two nodes,
+ * with a source node, target node, and optional source handle.
+ * 
+ * @author 二哥编程星球&Java进阶之路（沉默王二&一灰）
+ * @version 1.0.0
  */
 @Data
 @NoArgsConstructor
