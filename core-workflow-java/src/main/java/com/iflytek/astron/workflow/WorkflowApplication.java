@@ -23,7 +23,7 @@ public class WorkflowApplication {
             ========================================
               Version: 1.0.0-SNAPSHOT
               Port: 7880
-              Health: http://localhost:7881/actuator/health
+              Health: http://localhost:7880/actuator/health
             ========================================
             
             """);
