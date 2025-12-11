@@ -77,8 +77,11 @@ public class LLMNodeExecutor extends AbstractNodeExecutor {
         }
         LlmChatHistory.addMessage(chatId, node.getId(), MsgTypeEnum.USER, resolvedPrompt);
         LlmResVo llmOutput = modelServiceClient.chatCompletion(req, chatResponse -> {
-            nodeState.callback().onNodeProcess(0, node.getId(), node.getData().getNodeMeta().getAliasName(),
-                    chatResponse.getResults().get(0).getOutput().getText(), "");
+            if (!CollectionUtils.isEmpty(chatResponse.getResults())) {
+                nodeState.callback().onNodeProcess(0, node.getId(), node.getData().getNodeMeta().getAliasName(),
+                        chatResponse.getResult().getOutput().getText(),
+                        (String) chatResponse.getResult().getOutput().getMetadata().get("reasoningContent"));
+            }
         });
 
         LlmChatHistory.addMessage(chatId, node.getId(), MsgTypeEnum.ASSISTANT, llmOutput.content());
@@ -190,6 +193,11 @@ public class LLMNodeExecutor extends AbstractNodeExecutor {
             // fixme 先只是先LLM返回text文本的场景; 后续需要考虑结构化、或者图片返回的场景
             OutputItem item = outItems.get(0);
             outputs.put(item.getName(), llmRes.content());
+
+            // 针对思考过程，做一个保留字段的设置，即 reason 表示大模型的推理过程信息
+            outItems.stream().filter(s -> "reason".equalsIgnoreCase(s.getName())).findAny().ifPresent(s -> {
+                outputs.put(s.getName(), llmRes.thinkContent());
+            });
         }
         return outputs;
     }

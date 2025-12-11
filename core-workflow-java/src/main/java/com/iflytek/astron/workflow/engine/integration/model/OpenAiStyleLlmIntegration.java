@@ -12,6 +12,7 @@ import org.springframework.ai.chat.messages.SystemMessage;
 import org.springframework.ai.chat.messages.UserMessage;
 import org.springframework.ai.chat.metadata.EmptyUsage;
 import org.springframework.ai.chat.metadata.Usage;
+import org.springframework.ai.chat.model.ChatModel;
 import org.springframework.ai.chat.model.ChatResponse;
 import org.springframework.ai.chat.prompt.Prompt;
 import org.springframework.ai.openai.OpenAiChatModel;
@@ -23,6 +24,10 @@ import reactor.core.publisher.Flux;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.function.Function;
 
 /**
  * 基于OpenAI接口风格的LLM 交互集成
@@ -52,6 +57,12 @@ public class OpenAiStyleLlmIntegration {
             baseUrl = apiUrl;
         }
 
+        if (apiUrl.contains("dashscope.aliyuncs.com")) {
+            // 百炼的模型访访问地址有点特殊；baseUrl不能h只是前缀的host
+            baseUrl = "https://dashscope.aliyuncs.com/compatible-mode";
+            basePath = "/v1/chat/completions";
+        }
+
         OpenAiApi.Builder builder = OpenAiApi.builder().apiKey(key).baseUrl(baseUrl);
         if (StringUtils.isNotBlank(basePath)) {
             builder.completionsPath(basePath);
@@ -62,15 +73,48 @@ public class OpenAiStyleLlmIntegration {
     }
 
     public LlmResVo call(LlmReqBo req, LlmCallback callback) {
-        OpenAiApi openAiApi = initClient(req.getApiKey(), req.getUrl());
-        OpenAiChatOptions.Builder optionBuilder = OpenAiChatOptions.builder().model(req.getModel()).streamUsage(true);
-        if (req.getMaxTokens() != null) {
-            optionBuilder.maxTokens(req.getMaxTokens());
+        // build prompt
+        Prompt prompt = buildPrompt(req);
+        // llm stream call
+        Flux<ChatResponse> flux = buildChatModel(req).stream(prompt);
+        // llm response
+        StringBuilder response = new StringBuilder();
+        // read response
+        StringBuilder reasoningContent = new StringBuilder();
+        try {
+            // accumulate response
+            ChatResponse lastResponse = flux.doOnNext(chatResponse -> {
+                if (!CollectionUtils.isEmpty(chatResponse.getResults())) {
+                    AssistantMessage message = chatResponse.getResult().getOutput();
+
+                    // Accumulate reasoning if present
+                    var reasoningChunk = message.getMetadata().get("reasoningContent");
+                    if (reasoningChunk != null) {
+                        reasoningContent.append(reasoningChunk);
+                    }
+
+                    // Accumulate response data
+                    String text = message.getText();
+                    if (!StringUtils.isBlank(text)) {
+                        response.append(text);
+                    }
+
+                    // Call the callback with the response
+                    callback.onResponse(chatResponse);
+                }
+            }).blockLast(); // block to wait for all responses to be processed
+
+            log.info("LLM reason and response: \n{}\n==========\n{}", reasoningContent, response);
+            // get token usage info
+            Usage tokenUsage = lastResponse != null ? lastResponse.getMetadata().getUsage() : new EmptyUsage();
+            return new LlmResVo(tokenUsage, response.toString(), reasoningContent.toString());
+        } catch (Exception e) {
+            log.error("Error calling OpenAI API", e);
+            throw new RuntimeException("Failed to call OpenAI API", e);
         }
+    }
 
-        OpenAiChatModel chatModel = OpenAiChatModel.builder().openAiApi(openAiApi).defaultOptions(optionBuilder.build()).build();
-
-        // 构建聊天历史
+    private Prompt buildPrompt(LlmReqBo req) {
         List<Message> msgList = new ArrayList<>();
         if (StringUtils.isNotBlank(req.getSystemMsg())) {
             msgList.add(new SystemMessage(req.getSystemMsg()));
@@ -92,29 +136,74 @@ public class OpenAiStyleLlmIntegration {
             }
         }
         msgList.add(new UserMessage(req.getUserMsg()));
-        Prompt prompt = new Prompt(msgList);
+        return new Prompt(msgList, buildChatOption(req));
+    }
 
-        // 流式请求
-        // todo 需要处理支持推理过程的模型中，推理结果的返回
-        Flux<ChatResponse> flux = chatModel.stream(prompt);
-        StringBuilder response = new StringBuilder();
+    private ChatModel buildChatModel(LlmReqBo req) {
+        OpenAiApi openAiApi = initClient(req.getApiKey(), req.getUrl());
+        OpenAiChatOptions.Builder optionBuilder = OpenAiChatOptions.builder().model(req.getModel()).streamUsage(true);
+        if (req.getMaxTokens() != null) {
+            optionBuilder.maxTokens(req.getMaxTokens());
+        }
+        // 支持深度思考
+        optionBuilder.extraBody(Map.of("enable_thinking", true));
+
+        return OpenAiChatModel.builder().openAiApi(openAiApi).defaultOptions(optionBuilder.build()).build();
+    }
+
+    private OpenAiChatOptions buildChatOption(LlmReqBo req) {
+        OpenAiChatOptions.Builder chatOptionsBuilder = OpenAiChatOptions.builder();
+
+        AtomicBoolean hasConfig = new AtomicBoolean(false);
+        if (req.getTopK() != null) {
+            hasConfig.set(true);
+        }
+        if (req.getMaxTokens() != null) {
+            hasConfig.set(true);
+            chatOptionsBuilder.maxTokens(req.getMaxTokens());
+        }
+        if (req.getExtraParams() != null) {
+            // 使用更简洁的方式处理额外参数
+            get(req.getExtraParams(), "temperature", Double::parseDouble).ifPresent(t -> {
+                hasConfig.set(true);
+                chatOptionsBuilder.temperature(t);
+            });
+            get(req.getExtraParams(), "topP", Double::parseDouble).ifPresent(topP -> {
+                hasConfig.set(true);
+                chatOptionsBuilder.topP(topP);
+            });
+            get(req.getExtraParams(), "presencePenalty", Double::parseDouble).ifPresent(presencePenalty -> {
+                hasConfig.set(true);
+                chatOptionsBuilder.presencePenalty(presencePenalty);
+            });
+            get(req.getExtraParams(), "frequencyPenalty", Double::parseDouble).ifPresent(frequencyPenalty -> {
+                hasConfig.set(true);
+                chatOptionsBuilder.frequencyPenalty(frequencyPenalty);
+            });
+            get(req.getExtraParams(), "maxTokens", Integer::parseInt).ifPresent(maxTokens -> {
+                hasConfig.set(true);
+                chatOptionsBuilder.maxTokens(maxTokens);
+            });
+            get(req.getExtraParams(), "n", Integer::parseInt).ifPresent(n -> {
+                hasConfig.set(true);
+                chatOptionsBuilder.N(n);
+            });
+        }
+
+        OpenAiChatOptions openAiChatOptions = hasConfig.get() ? chatOptionsBuilder.build() : null;
+        return openAiChatOptions;
+    }
+
+    private <T> Optional<T> get(Map<String, Object> map, String key, Function<String, T> parse) {
+        var value = map.get(key);
+        if (value == null) {
+            return Optional.empty();
+        }
         try {
-            // 在每个响应到达时进行处理
-            ChatResponse lastResponse = flux.doOnNext(chatResponse -> {
-                if (!CollectionUtils.isEmpty(chatResponse.getResults())) {
-                    String text = chatResponse.getResults().get(0).getOutput().getText();
-                    if (!StringUtils.isBlank(text)) {
-                        response.append(text);
-                        callback.onResponse(chatResponse);
-                    }
-                }
-            }).blockLast(); // 阻塞等待最后一个响应
-
-            Usage tokenUsage = lastResponse != null ? lastResponse.getMetadata().getUsage() : new EmptyUsage();
-            return new LlmResVo(tokenUsage, response.toString(), "");
+            return Optional.of(parse.apply(value + ""));
         } catch (Exception e) {
-            log.error("Error calling OpenAI API", e);
-            throw new RuntimeException("Failed to call OpenAI API", e);
+            log.error("Error parsing value! {} -> key: {}", map, key, e);
+            return Optional.empty();
         }
     }
 }
