@@ -1,4 +1,4 @@
-FROM maven:3.9.9-eclipse-temurin-21-noble AS build
+FROM docker.m.daocloud.io/library/maven:3.9.9-eclipse-temurin-21-noble AS build
 WORKDIR /app
 
 # Copy workflow source
@@ -9,7 +9,7 @@ WORKDIR /app/core-workflow-java
 RUN mvn clean package -DskipTests
 
 # Runtime stage
-FROM eclipse-temurin:21-jre-noble
+FROM docker.m.daocloud.io/library/eclipse-temurin:21-jre-noble
 WORKDIR /app
 
 # Set timezone
