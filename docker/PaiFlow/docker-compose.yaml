@@ -1,0 +1,177 @@
+version: '3.8'
+
+services:
+  # ============================================================================
+  # Infrastructure Services
+  # ============================================================================
+
+  # MySQL Database
+  mysql:
+    image: mysql:8.4
+    container_name: paiflow-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-root123}
+      MYSQL_DATABASE: paiflow_console
+    volumes:
+      - mysql_data:/var/lib/mysql
+      # Mount initialization scripts
+      - ./mysql:/docker-entrypoint-initdb.d
+    networks:
+      - paiflow-network
+    restart: always
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  # Redis Cache
+  redis:
+    image: redis:7
+    container_name: paiflow-redis
+    volumes:
+      - redis_data:/data
+    networks:
+      - paiflow-network
+    restart: always
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  # MinIO Object Storage
+  minio:
+    image: minio/minio:RELEASE.2025-07-23T15-54-02Z
+    container_name: paiflow-minio
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER:-minioadmin}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:-minioadmin123}
+    ports:
+      - "19000:9000"
+      - "19001:9001"
+    volumes:
+      - minio_data:/data
+    networks:
+      - paiflow-network
+    restart: always
+    command: server /data --console-address ":9001"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  # ============================================================================
+  # Application Services
+  # ============================================================================
+
+  # Console Frontend
+  console-frontend:
+    build:
+      context: ../../
+      dockerfile: docker/PaiFlow/Dockerfile.frontend
+    container_name: paiflow-console-frontend
+    environment:
+      NGINX_PORT: 1881
+      # Configuration for runtime-config.js
+      CONSOLE_API_URL: http://localhost:8080
+      # Adjust these if you have authentication set up
+      CONSOLE_CASDOOR_URL: ""
+      CONSOLE_CASDOOR_ID: ""
+    ports:
+      - "3000:1881"
+    networks:
+      - paiflow-network
+    restart: always
+
+  # Console Backend (Hub)
+  console-hub:
+    build:
+      context: ../../
+      dockerfile: docker/PaiFlow/Dockerfile.backend
+    container_name: paiflow-console-hub
+    environment:
+      # Database
+      MYSQL_URL: jdbc:mysql://mysql:3306/paiflow_console?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai
+      MYSQL_USER: root
+      MYSQL_PASSWORD: ${MYSQL_ROOT_PASSWORD:-root123}
+      
+      # Redis
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      
+      # MinIO
+      OSS_ENDPOINT: http://minio:9000
+      OSS_ACCESS_KEY_ID: ${MINIO_ROOT_USER:-minioadmin}
+      OSS_ACCESS_KEY_SECRET: ${MINIO_ROOT_PASSWORD:-minioadmin123}
+      OSS_REMOTE_ENDPOINT: http://localhost:19000
+      OSS_BUCKET_CONSOLE: console
+      
+      # Integration with Workflow
+      WORKFLOW_CHAT_URL: http://core-workflow-java:7880/api/v1/workflow/chat/stream
+      
+      # Other settings
+      SERVER_PORT: 8080
+    ports:
+      - "8080:8080"
+    depends_on:
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      minio:
+        condition: service_healthy
+    networks:
+      - paiflow-network
+    restart: always
+
+  # Core Workflow Java
+  core-workflow-java:
+    build:
+      context: ../../
+      dockerfile: docker/PaiFlow/Dockerfile.workflow
+    container_name: paiflow-core-workflow-java
+    environment:
+      # Database
+      MYSQL_HOST: mysql
+      MYSQL_PORT: 3306
+      MYSQL_DB: paiflow-workflow
+      MYSQL_USER: root
+      MYSQL_PASSWORD: ${MYSQL_ROOT_PASSWORD:-root123}
+      
+      # Redis
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      
+      # Integration with Console
+      MODEL_SERVICE_URL: http://console-hub:8080
+      
+      # MinIO
+      OSS_ENDPOINT: http://minio:9000
+      OSS_ACCESS_KEY_ID: ${MINIO_ROOT_USER:-minioadmin}
+      OSS_ACCESS_KEY_SECRET: ${MINIO_ROOT_PASSWORD:-minioadmin123}
+      OSS_REMOTE_ENDPOINT: http://localhost:19000
+      
+      SERVER_PORT: 7880
+    ports:
+      - "7880:7880"
+    depends_on:
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      minio:
+        condition: service_healthy
+    networks:
+      - paiflow-network
+    restart: always
+
+networks:
+  paiflow-network:
+    driver: bridge
+
+volumes:
+  mysql_data:
+  redis_data:
+  minio_data:
