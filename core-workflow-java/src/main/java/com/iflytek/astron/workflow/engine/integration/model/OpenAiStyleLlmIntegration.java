@@ -58,9 +58,9 @@ public class OpenAiStyleLlmIntegration {
         }
 
         if (apiUrl.contains("dashscope.aliyuncs.com")) {
-            // 百炼的模型访访问地址有点特殊；baseUrl不能h只是前缀的host
+            // 百炼的模型访访问地址有点特殊；baseUrl不能只是前面的host
             baseUrl = "https://dashscope.aliyuncs.com/compatible-mode";
-            basePath = "/v1/chat/completions";
+            basePath = null;
         }
 
         OpenAiApi.Builder builder = OpenAiApi.builder().apiKey(key).baseUrl(baseUrl);
