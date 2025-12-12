@@ -40,6 +40,12 @@ http { \
       try_files \$uri \$uri/ /index.html; \
       expires -1; \
     } \
+    location /console-api/ { \
+      proxy_pass http://console-hub:8080/; \
+      proxy_set_header Host \$host; \
+      proxy_set_header X-Real-IP \$remote_addr; \
+      proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for; \
+    } \
     location ~ .*\.(gif|jpg|jpeg|png|PNG|bmp|swf|asp|cfm|xml|py|pl|lasso|cfc|afp|txt|zip|log|ico|csv|json|xls|pdf|mp3|mp4|apk)$ { \
       expires 1y; access_log off; \
     } \

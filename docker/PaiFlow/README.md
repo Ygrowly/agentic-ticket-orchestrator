@@ -21,6 +21,8 @@
 
 我们采用了一种叫做**“多阶段构建”**的技术。你可以把它想象成“厨房”和“餐厅”的关系：我们在一个装满工具的“厨房容器”里把代码做成“菜”（编译成 Jar 包或静态文件），然后把“菜”端到一个干净清爽的“餐厅容器”里运行。这样做出来的镜像非常小，运行效率也高。
 
+为了解决国内网络环境下载镜像慢的问题，我们默认配置了 **DaoCloud 镜像加速** (`docker.m.daocloud.io`)，确保你能顺畅地拉取基础镜像。
+
 ```mermaid
 graph TD
     subgraph "第一步：基础设施准备"
@@ -53,198 +55,158 @@ graph TD
 
 ### 深入理解核心文件
 
-在这个目录下，有几个关键文件在发挥作用，我们来逐一解读。
-
 #### 1. 总指挥：`docker-compose.yaml`
-这个文件是 Docker Compose 的配置文件，它定义了整个系统的“编排逻辑”。你可以把它想象成一个乐团的指挥谱，告诉每个乐手（服务）该什么时候出场，该怎么配合。
+
+这个文件定义了整个系统的“编排逻辑”。
 
 ```yaml
-version: '3.8'  # 使用 Docker Compose 的 3.8 版本语法
+version: '3.8'
 
 services:
   # -----------------------------------------------------------------------------
-  # 1. 基础设施层 (Database & Cache & Storage)
+  # 1. 基础设施层
   # -----------------------------------------------------------------------------
   
   # MySQL 数据库服务
   mysql:
-    image: mysql:8.4               # 使用 MySQL 8.4 官方镜像
-    container_name: paiflow-mysql  # 给容器起个固定的名字，方便后续操作
+    image: docker.m.daocloud.io/library/mysql:8.4
+    container_name: paiflow-mysql
     environment:
-      MYSQL_ROOT_PASSWORD: root123 # 设置 root 用户的密码
-      MYSQL_DATABASE: paiflow-console # 初始创建的数据库名，对应后端配置
+      MYSQL_ROOT_PASSWORD: 123456 # 统一密码
+      MYSQL_DATABASE: paiflow-console
     volumes:
-      - mysql_data:/var/lib/mysql  # 【重要】把数据存到 Docker 卷里，防止重启丢失
-      - ./mysql:/docker-entrypoint-initdb.d # 【关键】把本地 SQL 脚本挂载进去，自动初始化数据库
-    networks:
-      - paiflow-network            # 加入专用的虚拟网络
-    healthcheck:                   # 健康检查：每 30 秒 ping 一次，确保数据库活着
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      - ./mysql:/docker-entrypoint-initdb.d # 自动初始化 SQL 脚本
+    ports:
+      - "3306:3306"
 
   # Redis 缓存服务
   redis:
-    image: redis:7                 # 使用 Redis 7 官方镜像
+    image: docker.m.daocloud.io/library/redis:7
     container_name: paiflow-redis
-    volumes:
-      - redis_data:/data           # 持久化 Redis 数据
-    networks:
-      - paiflow-network
 
-  # MinIO 对象存储服务 (类似 AWS S3)
+  # MinIO 对象存储服务
   minio:
-    image: minio/minio:RELEASE.2025-07-23T15-54-02Z
-    container_name: paiflow-minio
-    environment:
-      MINIO_ROOT_USER: minioadmin      # 设置管理员账号
-      MINIO_ROOT_PASSWORD: minioadmin123 # 设置管理员密码
+    image: docker.m.daocloud.io/minio/minio:RELEASE.2025-07-23T15-54-02Z
     ports:
-       - "9000:9000"  # API 端口：映射到宿主机 9000
-       - "9001:9001"  # 控制台端口：映射到宿主机 9001
-     command: server /data --console-address ":9001" # 启动命令：指定数据目录和控制台地址
+       - "9000:9000"  # API 端口
+       - "9001:9001"  # 控制台端口
 
   # -----------------------------------------------------------------------------
-  # 2. 应用层 (Frontend & Backend)
+  # 2. 应用层
   # -----------------------------------------------------------------------------
 
   # 控制台前端 (React + Nginx)
   console-frontend:
-    build:
-      context: ../../              # 【关键】构建上下文是项目根目录，这样才能访问到源码
-      dockerfile: docker/PaiFlow/Dockerfile.frontend # 指定 Dockerfile 位置
     ports:
-      - "3000:1881"                # 把容器内的 1881 端口映射到电脑的 3000 端口
-    networks:
-      - paiflow-network
+      - "3000:1881" # 前端访问地址 http://localhost:3000
 
   # 控制台后端 (Java Spring Boot)
   console-hub:
-    build:
-      context: ../../
-      dockerfile: docker/PaiFlow/Dockerfile.backend
     environment:
-      # 告诉后端去哪里连数据库 (使用容器名 'mysql' 作为主机名)
-      MYSQL_HOST: mysql            # 连接 MySQL 容器
-      MYSQL_PORT: 3306
-      MYSQL_DB: paiflow-console    # 指定数据库名
-      REDIS_HOST: redis            # 连接 Redis 容器
-      OSS_ENDPOINT: http://minio:9000 # 连接 MinIO 容器 (Docker 内部通信用)
-      OSS_REMOTE_ENDPOINT: http://localhost:9000 # 浏览器下载文件用 (外部访问用)
-      WORKFLOW_CHAT_URL: http://core-workflow-java:7880... # 连接工作流服务
-    depends_on:                    # 【关键】启动顺序控制
-      mysql:
-        condition: service_healthy # 必须等 MySQL 健康检查通过了再启动
-      redis:
-        condition: service_healthy
-      minio:
-        condition: service_healthy
-
-  # 工作流引擎 (Java Spring Boot)
-  core-workflow-java:
-    build:
-      context: ../../
-      dockerfile: docker/PaiFlow/Dockerfile.workflow
-    environment:
-      MYSQL_HOST: mysql            # 连接同一个 MySQL
-      MODEL_SERVICE_URL: http://console-hub:8080 # 连接控制台后端
+      MYSQL_HOST: mysql
+      MYSQL_PASSWORD: 123456
+      OSS_REMOTE_ENDPOINT: http://localhost:9000 # 浏览器访问 MinIO 的地址
     ports:
-      - "7880:7880"                # 暴露 7880 端口
-    depends_on:
-      mysql:
-        condition: service_healthy # 同样要等数据库准备好
+      - "8080:8080"
 
-networks:
-  paiflow-network:                 # 定义网络，让大家能互相访问
-
-volumes:                           # 定义数据卷，持久化保存数据
-  mysql_data:
-  redis_data:
-  minio_data:
-```
-
-#### 2. 后端构建 (`Dockerfile.backend`)
-这是 Java 后端服务的构建过程。
-
-```dockerfile
-# 1. 定义“厨房”：使用 Maven 和 JDK 21 的镜像作为构建环境
-# 这个镜像标签 (Tag) 包含了丰富的信息：
-# - 3.9.9：代表 Maven 的版本是 3.9.9
-# - eclipse-temurin-21：代表 JDK 的版本是 21 (来自 Eclipse Temurin 发行版)
-# - noble：代表底层的 Linux 操作系统是 Ubuntu 24.04 LTS (代号 Noble Numbat)
-# 注意：这些工具是 Docker 从互联网上拉取的，完全独立于你本机的环境。
-FROM maven:3.9.9-eclipse-temurin-21-noble AS build
-WORKDIR /app
-
-# 2. 把源代码“搬进厨房”
-COPY console/backend /app/console/backend
-
-# 3. 开始“做菜”：进入目录并运行 Maven 打包命令
-WORKDIR /app/console/backend
-# -DskipTests 表示跳过单元测试，加快构建速度
-RUN mvn clean package -DskipTests
-
-# 4. 定义“餐厅”：使用轻量级的 JRE 21 镜像作为运行环境
-FROM eclipse-temurin:21-jre-noble
-WORKDIR /app
-
-# 5. 设置时区为上海时间，避免日志时间错乱
-RUN ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && \
-    echo "Asia/Shanghai" > /etc/timezone
-
-# 6. 把“做好的菜”（Jar 包）从“厨房”端到“餐厅”
-COPY --from=build /app/console/backend/hub/target/hub-server.jar /app/hub-server.jar
-
-# 7. 准备日志目录和暴露端口
-RUN mkdir -p /app/logs
-EXPOSE 8080
-
-# 8. 启动应用：配置 Java 内存参数并运行 Jar 包
-ENTRYPOINT ["java", "-XX:MaxRAMPercentage=75.0", "-jar", "/app/hub-server.jar"]
+  # 工作流引擎
+  core-workflow-java:
+    environment:
+      MYSQL_HOST: mysql
+      MYSQL_PASSWORD: 123456
+    ports:
+      - "7880:7880"
 ```
 
 #### 3. 前端构建 (`Dockerfile.frontend`)
-这是 React 前端页面的构建过程。
+
+前端构建过程不仅负责编译 React 代码，还配置了一个生产级别的 Nginx 服务器来处理静态资源和 API 代理。
 
 ```dockerfile
-# 1. 定义“厨房”：使用 Node.js 环境
-FROM node:18-alpine AS builder
+# -----------------------------------------------------------------------------
+# 第一阶段：构建环境 (Builder Stage)
+# -----------------------------------------------------------------------------
+# 使用 Node.js 18 作为构建基础镜像
+FROM docker.m.daocloud.io/library/node:18-alpine AS builder
 WORKDIR /app
 
-# 2. 复制代码并安装依赖
+# 复制前端源代码
 COPY console/frontend /app/console/frontend
 WORKDIR /app/console/frontend
-# npm ci 是一种更干净、更快速的安装依赖方式
+
+# 安装依赖并编译
+# 1. 设置 npm 镜像源为官方源（也可以换成淘宝源加快速度）
+# 2. npm ci: 严格按照 package-lock.json 安装依赖，比 npm install 更快更稳定
+# 3. max-old-space-size=4096: 增加 Node 内存限制，防止构建大型项目时内存溢出
 RUN npm config set registry https://registry.npmjs.org/ && \
     npm ci --legacy-peer-deps && \
-    npm run build-prod
+    NODE_OPTIONS="--max-old-space-size=4096" npm run build-prod
 
-# 3. 定义“餐厅”：使用 Nginx 服务器
-FROM nginx:1.15-alpine
+# -----------------------------------------------------------------------------
+# 第二阶段：运行环境 (Runtime Stage)
+# -----------------------------------------------------------------------------
+# 使用轻量级的 Nginx Alpine 镜像
+FROM docker.m.daocloud.io/library/nginx:1.15-alpine
 
-# 4. 配置 Nginx（省略了部分细节配置）
-RUN echo "..." > /etc/nginx/nginx.conf
+# 定义环境变量，Nginx 将监听此端口 (默认 1881)
+ENV NGINX_PORT=1881
 
-# 5. 把编译好的静态文件（HTML/CSS/JS）从“厨房”搬到 Nginx 的目录
+# 【核心配置】动态生成 nginx.conf
+# 这里直接在 Dockerfile 里写入配置，免去了挂载外部配置文件的麻烦
+RUN echo "user  nginx; \
+worker_processes  8; \
+# ... (省略标准日志和性能配置) ...
+http { \
+  include       /etc/nginx/mime.types; \
+  default_type  application/octet-stream; \
+  # 开启 Gzip 压缩，减少传输流量
+  gzip on; \
+  \
+  server { \
+    listen ${NGINX_PORT}; \
+    root /var/www; \
+    \
+    # 1. SPA 单页应用路由支持
+    # 所有 404 请求都重定向回 index.html，由 React Router 处理路由
+    location / { \
+      try_files \$uri \$uri/ /index.html; \
+      expires -1; \
+    } \
+    \
+    # 2. API 反向代理 (解决跨域问题)
+    # 将 /console-api/ 开头的请求转发给后端容器 console-hub
+    location /console-api/ { \
+      proxy_pass http://console-hub:8080/; \
+      proxy_set_header Host \$host; \
+      proxy_set_header X-Real-IP \$remote_addr; \
+    } \
+    \
+    # 3. 静态资源长期缓存
+    location ~ .*\.(js|css|png|jpg|...)$ { \
+      expires 1y; \
+    } \
+  } \
+}" > /etc/nginx/nginx.conf
+
+# 暴露端口
+EXPOSE ${NGINX_PORT}
+
+# 从构建阶段复制编译好的 dist 目录到 Nginx 目录
 COPY --from=builder /app/console/frontend/dist /var/www
 
-# 6. 启动 Nginx
+# 启动 Nginx
+COPY console/frontend/docker-entrypoint.sh /docker-entrypoint.sh
+RUN chmod +x /docker-entrypoint.sh
 ENTRYPOINT ["/docker-entrypoint.sh"]
 ```
 
-#### 4. 工作流构建 (`Dockerfile.workflow`)
-工作流引擎也是 Java 项目，所以它的构建过程和后端几乎一模一样，也是 Maven 编译 -> 复制 Jar 包 -> JRE 运行。
+**关键点解析：**
 
-```dockerfile
-# 1. Maven 构建环境
-FROM maven:3.9.9-eclipse-temurin-21-noble AS build
-# ... (复制源码并 mvn package)
-
-# 2. JRE 运行环境
-FROM eclipse-temurin:21-jre-noble
-# ... (复制 workflow-java.jar)
-
-# 3. 启动应用
-ENTRYPOINT ["java", ..., "-jar", "/app/workflow-java.jar"]
-```
+1.  **SPA 路由支持 (`try_files`)**：React 是单页应用 (SPA)，如果用户直接访问 `/login` 这样的子路径，Nginx 默认会找 `login` 文件，找不到就报 404。配置 `try_files ... /index.html` 后，Nginx 会把所有找不到的请求都给 `index.html`，让前端路由接管，完美解决刷新 404 问题。
+2.  **API 反向代理 (`proxy_pass`)**：这是前后端分离部署的关键。前端代码里请求 `/console-api/xxx`，Nginx 会自动把请求转发给后端的 `http://console-hub:8080/xxx`。这样做有两个好处：
+    *   **解决跨域 (CORS)**：浏览器看来所有请求都是发给同一个域名的，不存在跨域问题。
+    *   **隐藏后端架构**：外部用户不需要知道后端的真实 IP 和端口。
+3.  **内存优化**：构建时增加了 Node.js 的内存上限，防止因项目过大导致构建失败。
 
 ---
 
@@ -256,35 +218,20 @@ ENTRYPOINT ["java", ..., "-jar", "/app/workflow-java.jar"]
 docker-compose up -d --build
 ```
 
-### 这个命令到底干了什么？
-
-当你敲下回车后，Docker 会忙活好一阵子，具体流程是这样的：
-
-1.  **下载基础镜像**：如果你本地没有 `maven`、`node`、`mysql` 等镜像，Docker 会先去互联网下载它们。
-2.  **构建前端**：它会读取 `Dockerfile.frontend`，启动一个临时的 Node.js 容器，把 React 代码编译成 HTML 和 JS 文件。
-3.  **构建后端**：同时，它会读取 `Dockerfile.backend`，启动一个临时的 Maven 容器，下载 Java 依赖包（这一步取决于网速，可能需要几分钟），然后把代码编译成 `.jar` 文件。
-4.  **启动数据库**：构建完成后，Docker 会先启动 MySQL、Redis 和 MinIO，并等待它们初始化完成。
-5.  **启动应用**：最后，它会启动前端 Nginx 和后端 Java 应用。后端应用会自动连接到已经准备好的 MySQL、Redis 和 MinIO。
-
-> **温馨提示**：第一次运行时，因为要下载大量的 Maven 依赖（Jar 包）和 NPM 依赖，可能需要 5-10 分钟，请耐心喝杯咖啡等待一下。之后的运行就会非常快了。
-
 ### 验证是否成功
 
 当命令执行完毕，且没有报错时，你可以打开浏览器看看效果：
 
-*   **想看界面？** 访问前端：[http://localhost:3000](http://localhost:3000)
-*   **想看接口？** 访问后端：[http://localhost:8080](http://localhost:8080)
-*   **想看工作流？** 访问引擎：[http://localhost:7880](http://localhost:7880)
-*   **想看文件存储？** 访问 MinIO：[http://localhost:9001](http://localhost:9001)
+*   **控制台前端**：[http://localhost:3000](http://localhost:3000)
+    *   **登录账号**：`admin`
+    *   **登录密码**：`123` (注意：这是演示环境的硬编码密码，与数据库密码不同)
+*   **控制台后端接口**：[http://localhost:8080/actuator/health](http://localhost:8080/actuator/health)
+*   **工作流引擎接口**：[http://localhost:7880/actuator/health](http://localhost:7880/actuator/health)
+*   **MinIO 控制台**：[http://localhost:9001](http://localhost:9001)
     *   账号：`minioadmin`
-    *   密码：`minioadmin123`
-    *   API 端口：`9000` (代码连接使用)
-
-如果能看到画面，恭喜你，部署成功了！
+    *   密码：`minioadmin`
 
 ### 停止服务
-
-玩够了想关闭？在终端里运行：
 
 ```bash
 docker-compose down
@@ -294,29 +241,27 @@ docker-compose down
 
 ---
 
-## 常见问题解答 (FAQ)
+## 常见问题解答 (FAQ) & 故障排除
 
 **Q: 启动时提示端口被占用（Port already in use）怎么办？**
+A: 请检查本地是否已经运行了 MySQL (3306), Redis (6379) 或 MinIO (9000/9001)。推荐先停止本地冲突的服务，或者使用 `docker stop <container_id>` 停止旧的容器。
 
-A: 这通常是因为你本地已经运行了 MySQL (3306) 或者 Redis (6379)。
-*   **方法一（推荐）**：关掉你本地冲突的服务。
-*   **方法二**：打开 `docker-compose.yaml`，找到冲突的服务，修改 `ports` 部分。
-*   **注意**：MinIO 默认使用 `9000` (API) 和 `9001` (控制台)，如果冲突也需要修改。
+**Q: 登录时提示“服务器开小差了” (500 Error) 或 后端日志报错 `RedisException: NOSCRIPT`？**
+A: 这是因为 Redis 容器重启后丢失了 Lua 脚本缓存，但后端服务还在尝试调用旧的脚本 SHA 值。
+**解决方法**：重启后端服务即可。
+```bash
+docker compose restart console-hub
+```
 
-**Q: 数据库名为什么是 `paiflow-console`？**
+**Q: 前端登录接口报错 `502 Bad Gateway`？**
+A: 这通常发生在后端服务 (`console-hub`) 重启后 IP 地址发生变化，但前端 Nginx 还在缓存旧的 IP。
+**解决方法**：重启前端服务。
+```bash
+docker compose restart console-frontend
+```
 
-A: 我们在 `docker-compose.yaml` 里把 MySQL 的默认数据库设置成了 `paiflow-console`。这是为了配合后端代码里的配置。如果随意修改名字，后端程序启动时找不到对应的数据库就会报错。
+**Q: 数据库初始化失败 `Variable 'time_zone' can't be set to the value of 'NULL'`？**
+A: 这是一个已知的 SQL 脚本兼容性问题。我们在 `schema.sql` 中已经注释掉了相关代码。如果遇到此问题，请确保使用的是最新的代码，并尝试 `docker compose down -v` 清理卷后重试。
 
-**Q: 第一次运行数据库是空的吗？**
-
-A: **不是的**。我们已经为您准备好了数据库初始化脚本，它们位于 `docker/PaiFlow/mysql/` 目录下。
-当您第一次运行 `docker-compose up` 时，MySQL 容器会自动执行这些 SQL 脚本，创建所有必要的表结构和初始数据。
-所以您不需要手动做任何事情。
-
-**Q: 我怎么确认这些 SQL 文件已经被执行了呢？**
-
-A: 您可以通过以下步骤来验证：
-1.  进入 MySQL 容器：`docker exec -it paiflow-mysql bash`
-2.  登录 MySQL：`mysql -u root -proot123`
-3.  查看数据库列表：`SHOW DATABASES;` (您应该能看到 `paiflow_console`, `paiflow-workflow` 等数据库)
-4.  查看表结构：`USE paiflow_console; SHOW TABLES;` (您应该能看到许多已经创建好的表)
+**Q: 为什么 MinIO 无法上传/下载文件？**
+A: 请检查 `docker-compose.yaml` 中的 `OSS_REMOTE_ENDPOINT` 是否配置为 `http://localhost:9000`。如果配置为容器内部 IP，浏览器将无法访问。
