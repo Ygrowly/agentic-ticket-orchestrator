@@ -109,7 +109,7 @@ public class QwenTTSIntegratoin implements TtsIntegration {
 
     private AudioParameters.Voice getVoice(String vcn) {
         for (AudioParameters.Voice vo : AudioParameters.Voice.values()) {
-            if (vo.name().equals(vcn) || vo.getValue().equals(vcn)) {
+            if (vo.name().equalsIgnoreCase(vcn) || vo.getValue().equalsIgnoreCase(vcn)) {
                 return vo;
             }
         }
