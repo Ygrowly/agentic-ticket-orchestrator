@@ -16,7 +16,16 @@ class KafkaProducerService(Service):
         :param config: Kafka 配置
         """
         self.config = config
-        self.producer = Producer(**config)
+        self.enabled = os.getenv("KAFKA_ENABLE", "false").lower() in (
+            "true",
+            "1",
+            "yes",
+            "on",
+        )
+        if self.enabled:
+            self.producer = Producer(**config)
+        else:
+            self.producer = None
 
     def send(
         self,
@@ -32,12 +41,7 @@ class KafkaProducerService(Service):
         :param callback: 回调函数
         :param timeout: poll timeout (秒)
         """
-        if os.getenv("KAFKA_ENABLE", "false").lower() not in (
-            "true",
-            "1",
-            "yes",
-            "on",
-        ):
+        if not self.enabled or not self.producer:
             return
 
         if not timeout:
