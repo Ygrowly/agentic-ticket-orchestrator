@@ -40,7 +40,7 @@ import java.util.concurrent.TimeUnit;
  */
 @Slf4j
 @Component
-public class SmartTTSIntegration {
+public class SmartTTSIntegration implements TtsIntegration {
     private final OkHttpClient httpClient = new OkHttpClient.Builder()
             .connectTimeout(30, TimeUnit.SECONDS)
             .readTimeout(30, TimeUnit.SECONDS)
@@ -59,8 +59,16 @@ public class SmartTTSIntegration {
     @Value("${spark.tts-url}")
     private String ttsUrl;
 
+    @Value("${spark.source:spark}")
+    private String source;
+
     @Resource
     private S3ClientUtil s3ClientUtil;
+
+    @Override
+    public String source() {
+        return source;
+    }
 
     public Map<String, Object> call(NodeState nodeState, Map<String, Object> inputs) throws Exception {
         Node node = nodeState.node();
