@@ -60,7 +60,9 @@ function ModelCardList({
   return (
     <div className={`${showCreate ? '' : 'lg:pl-[1%]'} pr-[7%]`}>
       {/* 卡片网格 */}
-      <div className={`grid grid-cols-1 gap-4 lg:grid-cols-2 2xl:grid-cols-3`}>
+      <div
+        className={`card-wrapper grid grid-cols-1 gap-4 lg:grid-cols-2 2xl:grid-cols-3`}
+      >
         {/* 新建模型卡片 */}
         {showCreate && (
           <div
@@ -83,7 +85,7 @@ function ModelCardList({
             }}
           >
             <div className="color-mask"></div>
-            <div className="plugin-card-add flex flex-col">
+            <div className="plugin-card-add flex flex-col relative overflow-hidden">
               <div className="flex justify-between w-full">
                 <span className="model-icon"></span>
                 <span className="add-icon"></span>
@@ -94,6 +96,7 @@ function ModelCardList({
               >
                 {t('model.createModel')}
               </div>
+              <span className="bg-add-icon"></span>
             </div>
           </div>
         )}

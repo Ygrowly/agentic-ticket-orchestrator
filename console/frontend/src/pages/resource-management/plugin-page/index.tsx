@@ -45,7 +45,7 @@ const PluginPage: FC = () => {
           width: 'calc(0.85 * (100% - 8px))',
         }}
       >
-        <div className="font-medium"></div>
+        <div className="page-title">资源管理</div>
         <RetractableInput
           restrictFirstChar={true}
           onChange={getToolsDebounce}
@@ -58,7 +58,7 @@ const PluginPage: FC = () => {
             width: '85%',
           }}
         >
-          <div className="grid lg:grid-cols-3 xl:grid-cols-3 2xl:grid-cols-3 3xl:grid-cols-3 gap-6">
+          <div className="card-wrapper grid lg:grid-cols-3 xl:grid-cols-3 2xl:grid-cols-3 3xl:grid-cols-3 gap-6">
             <div
               className={`plugin-card-add-container relative ${
                 isHovered === null
@@ -82,7 +82,7 @@ const PluginPage: FC = () => {
               }}
             >
               <div className="color-mask"></div>
-              <div className="plugin-card-add flex flex-col">
+              <div className="plugin-card-add flex flex-col relative overflow-hidden">
                 <div className="flex justify-between w-full">
                   <span className="logo"></span>
                   <span className="add-icon"></span>
@@ -93,6 +93,8 @@ const PluginPage: FC = () => {
                 >
                   {t('plugin.createPlugin')}
                 </div>
+
+                <span className="bg-add-icon"></span>
               </div>
             </div>
             {tools.map(k => (

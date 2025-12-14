@@ -1,15 +1,8 @@
 import { ReactElement } from 'react';
 import { useNavigate } from 'react-router-dom';
-import agentLog from '@/assets/imgs/sidebar/agentLog.svg';
+import agentLog from '@/assets/imgs/sidebar/logo.png';
 
-interface SidebarLogoProps {
-  isCollapsed: boolean;
-  isEnterprise?: boolean;
-  enterpriseLogo?: string | undefined;
-  languageCode?: string;
-}
-
-const SidebarLogo = ({ isCollapsed }: SidebarLogoProps): ReactElement => {
+const SidebarLogo = (): ReactElement => {
   const navigate = useNavigate();
 
   const handleLogoClick = (): void => {
@@ -20,12 +13,11 @@ const SidebarLogo = ({ isCollapsed }: SidebarLogoProps): ReactElement => {
     <div className="flex items-center justify-center gap-1">
       <img
         src={agentLog}
-        className="w-[40px] cursor-pointer"
+        className="w-[140px] cursor-pointer"
         alt="Pai Flow"
-        style={{ height: isCollapsed ? '34px' : 'auto' }}
+        style={{ height: 'auto' }}
         onClick={handleLogoClick}
       />
-      {!isCollapsed && <span className="font-bold">Pai Flow</span>}
     </div>
   );
 };

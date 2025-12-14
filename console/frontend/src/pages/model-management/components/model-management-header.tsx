@@ -28,9 +28,7 @@ const ModelManagementHeader: React.FC<ModelManagementHeaderProps> = ({
   setShowShelfOnly,
 }) => {
   const { t } = useTranslation();
-  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState(initialActiveTab);
-  const { pathname } = useLocation();
 
   useEffect(() => {
     setActiveTab(initialActiveTab);
@@ -66,66 +64,10 @@ const ModelManagementHeader: React.FC<ModelManagementHeaderProps> = ({
   };
 
   return (
-    <div>
+    <div className="w-full max-w-[1425px] mx-auto">
       <div className="w-full relative z-10 flex flex-col justify-between rounded-2xl">
-        <div className="flex items-center gap-3 w-full">
-          {/* 标题 */}
-          <h1 className="font-medium text-[20px] text-[#333] leading-none">
-            {t('model.modelManagement')}
-          </h1>
-
-          {/* 警告条 */}
-          {offCount > 0 && !closed && (
-            <div className="flex-1 min-w-0 flex items-center justify-center bg-[#FEEDEC] text-[#F74E43] text-sm rounded-xl px-3 py-1">
-              <span className="flex-1 text-center">
-                {t('model.modelWillStopService')}
-              </span>
-
-              {/* 快速筛选 */}
-              <span
-                className="ml-auto mr-2 text-[#275eff] cursor-pointer hover:underline"
-                onClick={() => refreshModels?.()}
-              >
-                {t('model.quickFilter')}
-              </span>
-
-              {/* 关闭按钮 */}
-              <CloseOutlined
-                className="cursor-pointer hover:opacity-70"
-                onClick={handleClose}
-              />
-            </div>
-          )}
-        </div>
-
-        {/* Tab 切换 + 右侧控件 */}
-        <div className="flex items-center mt-4">
-          {/* 左侧 Tab */}
-          {/* <div className="flex items-center bg-[#f6f9ff] rounded-xl h-10 p-1 gap-1">
-            <div
-              className={`min-w-[70px] h-8 px-3 rounded-lg text-sm flex items-center justify-center cursor-pointer transition-colors
-            ${
-              pathname === '/management/model'
-                ? 'bg-white text-[#275eff] shadow'
-                : 'text-[#7f7f7f] hover:text-[#275eff]'
-            }`}
-              onClick={() => navigate('/management/model')}
-            >
-              {t('model.officialModel')}
-            </div>
-            <div
-              className={`min-w-[70px] h-8 px-3 rounded-lg text-sm flex items-center justify-center cursor-pointer transition-colors
-            ${
-              pathname === '/management/model/personalModel'
-                ? 'bg-white text-[#275eff] shadow'
-                : 'text-[#7f7f7f] hover:text-[#275eff]'
-            }`}
-              onClick={() => navigate('/management/model/personalModel')}
-            >
-              {t('model.personalModel')}
-            </div>
-          </div> */}
-
+        <div className="flex items-center mb-4">
+          <div className="page-title">{t('model.modelManagement')}</div>
           {/* 右侧控件 */}
           <div className="ml-auto flex items-center gap-4">
             {activeTab === 'personalModel' && (

@@ -253,35 +253,20 @@ function index() {
         />
       )}
 
-      <div className="pt-6 h-full flex flex-col overflow-hidden gap-6">
+      <div className="pt-8 h-full flex flex-col overflow-hidden gap-6">
         <div
           className="flex justify-between mx-auto max-w-[1425px]"
           style={{
             width: 'calc(0.85 * (100% - 8px))',
           }}
         >
-          <div className={styles.modelTitle}>
+          <div className={`page-title ${styles.modelTitle}`}>
             {t('agentPage.agentPage.myAgents')}
           </div>
           <div
             className="flex items-center gap-4"
             style={{ marginRight: '4px' }}
           >
-            <Select
-              suffixIcon={<img src={formSelect} className="w-4 h-4 " />}
-              className="search-select"
-              style={{ height: 32, width: 160, marginRight: '8px' }}
-              value={version}
-              onChange={value => {
-                setVersion(value);
-                setPageIndex(1);
-              }}
-              options={[
-                { label: t('agentPage.agentPage.allTypes'), value: 0 },
-                { label: t('agentPage.agentPage.instructionType'), value: 1 },
-                { label: t('agentPage.agentPage.workflowType'), value: 3 },
-              ]}
-            />
             <Select
               suffixIcon={<img src={formSelect} className="w-4 h-4 " />}
               className="search-select"
@@ -302,21 +287,6 @@ function index() {
                 },
               ]}
             />
-            <Select
-              suffixIcon={<img src={formSelect} className="w-4 h-4 " />}
-              className="search-select"
-              style={{ height: 32, width: 160, marginRight: '8px' }}
-              value={status}
-              onChange={value => {
-                setStatus(value);
-                setPageIndex(1);
-              }}
-              options={[
-                { label: t('agentPage.agentPage.allStatus'), value: 0 },
-                { label: t('agentPage.agentPage.published'), value: 1 },
-                { label: t('agentPage.agentPage.unpublished'), value: 2 },
-              ]}
-            />
             <RetractableInput
               restrictFirstChar={true}
               onChange={getRobotsDebounce}
@@ -333,14 +303,14 @@ function index() {
             ref={robotRef}
             onScroll={handleScroll}
           >
-            <div className="grid lg:grid-cols-3 xl:grid-cols-3 2xl:grid-cols-3 3xl:grid-cols-3 gap-6 items-end">
+            <div className="card-wrapper grid lg:grid-cols-3 xl:grid-cols-3 2xl:grid-cols-3 3xl:grid-cols-3 gap-6 items-end">
               <div
                 className={`common-card-add-container relative ${
                   isHovered === null
                     ? ''
                     : isHovered
                       ? 'knowledge-no-hover'
-                      : ' knowledge-hover'
+                      : 'knowledge-hover'
                 }`}
                 onMouseLeave={e => {
                   setIsHovered(true);
@@ -356,7 +326,7 @@ function index() {
                 }}
               >
                 <div className="color-mask"></div>
-                <div className="knowledge-card-add flex flex-col w-full">
+                <div className="knowledge-card-add flex flex-col w-full relative overflow-hidden">
                   <div className="w-full flex justify-between">
                     <span className="agent-icon"></span>
                     <span className="add-icon"></span>
@@ -367,6 +337,8 @@ function index() {
                   >
                     {t('agentPage.agentPage.createNewAgent')}
                   </div>
+
+                  <span className="bg-add-icon"></span>
                 </div>
               </div>
               {robots?.map((k: any) => (

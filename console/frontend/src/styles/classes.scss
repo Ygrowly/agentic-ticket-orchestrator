@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 :root {
-  --primary-color: #3498db;
+  --primary-color: #265dfe;
   --second-color: rgba(0, 0, 0, 0.8);
   --desc-color: #b2b2b2;
   --title-color: #000000;
@@ -19,11 +19,14 @@
 
   .hide-scrollbar {
     /* 隐藏滚动条但保持滚动功能 */
-    scrollbar-width: none; /* Firefox */
-    -ms-overflow-style: none; /* Internet Explorer 10+ */
+    scrollbar-width: none;
+    /* Firefox */
+    -ms-overflow-style: none;
+    /* Internet Explorer 10+ */
 
     &::-webkit-scrollbar {
-      display: none; /* Chrome, Safari, Edge */
+      display: none;
+      /* Chrome, Safari, Edge */
     }
   }
 
@@ -103,8 +106,7 @@
       display: none;
       width: 32px;
       height: 32px;
-      background: url('../assets/imgs/main/icon_bot_addabot.png') no-repeat
-        center;
+      background: url('../assets/imgs/main/icon_bot_addabot.png') no-repeat center;
       background-size: cover;
     }
 
@@ -121,32 +123,28 @@
     .logo {
       width: 48px;
       height: 48px;
-      background: url('../assets/imgs/knowledge/logo_zhishi_blue.svg') no-repeat
-        center;
+      background: url('../assets/imgs/knowledge/logo_zhishi_blue.svg') no-repeat center;
       background-size: cover;
     }
 
     .agent-icon {
       width: 48px;
       height: 48px;
-      background: url('../assets/imgs/agent/agent-icon-normal.svg') no-repeat
-        center;
+      background: url('../assets/imgs/agent-creation/agent-icon-normal.png') no-repeat center;
       background-size: cover;
     }
 
     .database-icon {
       width: 48px;
       height: 48px;
-      background: url('../assets/imgs/database/database-icon-normal.svg')
-        no-repeat center;
+      background: url('../assets/imgs/database/database-icon-normal.svg') no-repeat center;
       background-size: cover;
     }
 
     .flow-icon {
       width: 48px;
       height: 48px;
-      background: url('../assets/imgs/workflow/flow-icon-normal.svg') no-repeat
-        center;
+      background: url('../assets/imgs/workflow/flow-icon-normal.svg') no-repeat center;
       background-size: cover;
     }
   }
@@ -171,32 +169,28 @@
     .logo {
       width: 48px;
       height: 48px;
-      background: url('../assets/imgs/knowledge/logo_zhishi_white.svg')
-        no-repeat center;
+      background: url('../assets/imgs/knowledge/logo_zhishi_white.svg') no-repeat center;
       background-size: cover;
     }
 
     .agent-icon {
       width: 48px;
       height: 48px;
-      background: url('../assets/imgs/agent/agent-icon-active.svg') no-repeat
-        center;
+      background: url('../assets/imgs/agent-creation/agent-icon-active.png') no-repeat center;
       background-size: cover;
     }
 
     .database-icon {
       width: 48px;
       height: 48px;
-      background: url('../assets/imgs/database/database-icon-active.svg')
-        no-repeat center;
+      background: url('../assets/imgs/database/database-icon-active.svg') no-repeat center;
       background-size: cover;
     }
 
     .flow-icon {
       width: 48px;
       height: 48px;
-      background: url('../assets/imgs/workflow/flow-icon-active.svg') no-repeat
-        center;
+      background: url('../assets/imgs/workflow/flow-icon-active.svg') no-repeat center;
       background-size: cover;
     }
 
@@ -208,7 +202,7 @@
   }
 
   .knowledge-no-hover {
-    background: rgba(246, 246, 253, 0.5);
+    background: white;
 
     .color-mask {
       width: 0px;
@@ -240,8 +234,7 @@
       display: none;
       width: 32px;
       height: 32px;
-      background: url('../assets/imgs/main/icon_bot_addabot.png') no-repeat
-        center;
+      background: url('../assets/imgs/main/icon_bot_addabot.png') no-repeat center;
       background-size: cover;
     }
 
@@ -258,16 +251,14 @@
     .logo {
       width: 48px;
       height: 48px;
-      background: url('../assets/imgs/plugin/logo_gongju_blue.svg') no-repeat
-        center;
+      background: url('../assets/imgs/plugin/logo_gongju_blue.svg') no-repeat center;
       background-size: cover;
     }
 
     .model-icon {
       width: 48px;
       height: 48px;
-      background: url('../assets/imgs/modelManage/icon_bot_model_normal.png')
-        no-repeat center;
+      background: url('../assets/imgs/modelManage/icon_bot_model_normal.png') no-repeat center;
       background-size: cover;
     }
   }
@@ -288,16 +279,14 @@
     .logo {
       width: 48px;
       height: 48px;
-      background: url('../assets/imgs/plugin/logo_gongju_white.svg') no-repeat
-        center;
+      background: url('../assets/imgs/plugin/logo_gongju_white.svg') no-repeat center;
       background-size: cover;
     }
 
     .model-icon {
       width: 48px;
       height: 48px;
-      background: url('../assets/imgs/modelManage/icon_bot_model_act.png')
-        no-repeat center;
+      background: url('../assets/imgs/modelManage/icon_bot_model_act.png') no-repeat center;
       background-size: cover;
     }
 
@@ -317,6 +306,7 @@
       animation: notCover 0.2s;
     }
   }
+
   .rpa-card-add-container {
     min-height: 192px;
     overflow: hidden;
@@ -340,8 +330,7 @@
       display: none;
       width: 32px;
       height: 32px;
-      background: url('../assets/imgs/main/icon_bot_addabot.png') no-repeat
-        center;
+      background: url('../assets/imgs/main/icon_bot_addabot.png') no-repeat center;
       background-size: cover;
     }
 
@@ -365,8 +354,7 @@
     .model-icon {
       width: 48px;
       height: 48px;
-      background: url('../assets/imgs/modelManage/icon_bot_model_normal.png')
-        no-repeat center;
+      background: url('../assets/imgs/modelManage/icon_bot_model_normal.png') no-repeat center;
       background-size: cover;
     }
   }
@@ -394,8 +382,7 @@
     .model-icon {
       width: 48px;
       height: 48px;
-      background: url('../assets/imgs/modelManage/icon_bot_model_act.png')
-        no-repeat center;
+      background: url('../assets/imgs/modelManage/icon_bot_model_act.png') no-repeat center;
       background-size: cover;
     }
 
@@ -449,8 +436,7 @@
     .edit-icon {
       width: 16px;
       height: 16px;
-      background: url('../assets/imgs/main/icon_bot_edit_normal.png') no-repeat
-        center;
+      background: url('../assets/imgs/main/icon_bot_edit_normal.png') no-repeat center;
       background-size: cover;
     }
 
@@ -462,8 +448,7 @@
       font-weight: 500;
 
       .edit-icon {
-        background: url('../assets/imgs/main/icon_bot_edit_act.png') no-repeat
-          center;
+        background: url('../assets/imgs/main/icon_bot_edit_act.png') no-repeat center;
         background-size: cover;
       }
     }
@@ -471,32 +456,28 @@
     .setting-icon {
       width: 16px;
       height: 16px;
-      background: url('../assets/imgs/main/icon_bot_set_normal.png') no-repeat
-        center;
+      background: url('../assets/imgs/main/icon_bot_set_normal.png') no-repeat center;
       background-size: cover;
     }
 
     .chat-icon {
       width: 16px;
       height: 16px;
-      background: url('../assets/imgs/main/icon_bot_chat_normal.png') no-repeat
-        center;
+      background: url('../assets/imgs/main/icon_bot_chat_normal.png') no-repeat center;
       background-size: cover;
     }
 
     .copy-icon {
       width: 10px;
       height: 12px;
-      background: url('../assets/imgs/main/icon_bot_copy_normal.svg') no-repeat
-        center;
+      background: url('../assets/imgs/main/icon_bot_copy_normal.svg') no-repeat center;
       background-size: cover;
     }
 
     .share-icon {
       width: 14px;
       height: 14px;
-      background: url('../assets/imgs/main/icon_bot_share_normal.svg') no-repeat
-        center;
+      background: url('../assets/imgs/main/icon_bot_share_normal.svg') no-repeat center;
       background-size: cover;
     }
 
@@ -509,24 +490,21 @@
       font-weight: 500;
 
       .chat-icon {
-        background: url('../assets/imgs/main/icon_bot_chat_act.png') no-repeat
-          center;
+        background: url('../assets/imgs/main/icon_bot_chat_act.png') no-repeat center;
         background-size: cover;
       }
 
       .copy-icon {
         width: 10px;
         height: 12px;
-        background: url('../assets/imgs/main/icon_bot_copy_act.svg') no-repeat
-          center;
+        background: url('../assets/imgs/main/icon_bot_copy_act.svg') no-repeat center;
         background-size: cover;
       }
 
       .share-icon {
         width: 14px;
         height: 14px;
-        background: url('../assets/imgs/main/icon_bot_share_act.svg') no-repeat
-          center;
+        background: url('../assets/imgs/main/icon_bot_share_act.svg') no-repeat center;
         background-size: cover;
       }
     }
@@ -591,8 +569,7 @@
       display: none;
       width: 32px;
       height: 32px;
-      background: url('../assets/imgs/main/icon_bot_addabot.png') no-repeat
-        center;
+      background: url('../assets/imgs/main/icon_bot_addabot.png') no-repeat center;
       background-size: cover;
     }
 
@@ -608,8 +585,7 @@
     .logo-blue {
       width: 60px;
       height: 42px;
-      background: url('../assets/imgs/main/logo_feiyun_blue.png') no-repeat
-        center;
+      background: url('../assets/imgs/main/logo_feiyun_blue.png') no-repeat center;
       background-size: cover;
     }
 
@@ -623,8 +599,7 @@
       background: transparent;
 
       .logo-white {
-        background: url('../assets/imgs/main/logo_feiyun_white.png') no-repeat
-          center;
+        background: url('../assets/imgs/main/logo_feiyun_white.png') no-repeat center;
         background-size: cover;
       }
     }
@@ -687,8 +662,7 @@
   .delete-icon {
     width: 16px;
     height: 16px;
-    background: url('../assets/imgs/main/icon_bot_del_normal.png') no-repeat
-      center;
+    background: url('../assets/imgs/main/icon_bot_del_normal.png') no-repeat center;
     background-size: cover;
   }
 
@@ -700,8 +674,7 @@
       font-weight: 500;
 
       .delete-icon {
-        background: url('../assets/imgs/main/icon_bot_del_act.png') no-repeat
-          center;
+        background: url('../assets/imgs/main/icon_bot_del_act.png') no-repeat center;
         background-size: cover;
       }
     }
@@ -745,8 +718,7 @@
       z-index: 10;
       width: 24px;
       height: 24px;
-      background: url('../assets/imgs/chat/btn_chat_send_unactive.png')
-        no-repeat center;
+      background: url('../assets/imgs/chat/btn_chat_send_unactive.png') no-repeat center;
       background-size: cover;
     }
 
@@ -764,8 +736,7 @@
       z-index: 10;
       width: 24px;
       height: 24px;
-      background: url('../assets/imgs/chat/btn_chat_mic_normal.png') no-repeat
-        center;
+      background: url('../assets/imgs/chat/btn_chat_mic_normal.png') no-repeat center;
       background-size: cover;
     }
 
@@ -774,21 +745,18 @@
       z-index: 10;
       width: 24px;
       height: 24px;
-      background: url('../assets/imgs/chat/btn_chat_mic_end.png') no-repeat
-        center;
+      background: url('../assets/imgs/chat/btn_chat_mic_end.png') no-repeat center;
       background-size: cover;
     }
   }
 
-  .user-chat-input:focus + .send-btns .send-img {
-    background: url('../assets/imgs/chat/btn_chat_send_active.png') no-repeat
-      center;
+  .user-chat-input:focus+.send-btns .send-img {
+    background: url('../assets/imgs/chat/btn_chat_send_active.png') no-repeat center;
     background-size: cover;
   }
 
-  .user-chat-input:focus + .send-btns .ai-chat-img {
-    background: url('../assets/imgs/common/magic-fill-active.png') no-repeat
-      center;
+  .user-chat-input:focus+.send-btns .ai-chat-img {
+    background: url('../assets/imgs/common/magic-fill-active.png') no-repeat center;
     background-size: cover;
   }
 
@@ -813,80 +781,70 @@
     .usermanage-icon {
       width: 18px;
       height: 18px;
-      background: url('../assets/imgs/sidebar/icon_nav_usersetting1_act@2x.png')
-        no-repeat center;
+      background: url('../assets/imgs/sidebar/icon_nav_usersetting1_act@2x.png') no-repeat center;
       background-size: cover;
     }
 
     .modelmanage-icon {
       width: 18px;
       height: 18px;
-      background: url('../assets/imgs/sidebar/icon_nav_plugin_normal@2x.png')
-        no-repeat center;
+      background: url('../assets/imgs/sidebar/icon_nav_plugin_normal@2x.png') no-repeat center;
       background-size: cover;
     }
 
     .overview-icon {
       width: 18px;
       height: 18px;
-      background: url('../assets/imgs/common/icon_bot_setting_preview.png')
-        no-repeat center;
+      background: url('../assets/imgs/common/icon_bot_setting_preview.png') no-repeat center;
       background-size: cover;
     }
 
     .flow-arrange-icon {
       width: 18px;
       height: 18px;
-      background: url('../assets/imgs/common/icon_flow__arrange_act.png')
-        no-repeat center;
+      background: url('../assets/imgs/common/icon_flow__arrange_act.png') no-repeat center;
       background-size: cover;
     }
 
     .base-icon {
       width: 18px;
       height: 18px;
-      background: url('../assets/imgs/knowledge/icon_zhishi_setting_act.png')
-        no-repeat center;
+      background: url('../assets/imgs/knowledge/icon_zhishi_setting_act.png') no-repeat center;
       background-size: cover;
     }
 
     .document-setting {
       width: 18px;
       height: 18px;
-      background: url('../assets/imgs/knowledge/icon_zhishi_setting_act.png')
-        no-repeat center;
+      background: url('../assets/imgs/knowledge/icon_zhishi_setting_act.png') no-repeat center;
       background-size: cover;
     }
 
     .document-icon {
       width: 18px;
       height: 18px;
-      background: url('../assets/imgs/knowledge/icon_zhishi_file_act.png')
-        no-repeat center;
+      background: url('../assets/imgs/knowledge/icon_zhishi_file_act.png') no-repeat center;
       background-size: cover;
     }
 
     .hit-icon {
       width: 18px;
       height: 18px;
-      background: url('../assets/imgs/knowledge/icon_zhishi_target_act.png')
-        no-repeat center;
+      background: url('../assets/imgs/knowledge/icon_zhishi_target_act.png') no-repeat center;
       background-size: cover;
     }
 
     .parameter-icon {
       width: 18px;
       height: 18px;
-      background: url('../assets/imgs/plugin/icon_gongju_adjust_act.png')
-        no-repeat center;
+      background: url('../assets/imgs/plugin/icon_gongju_adjust_act.png') no-repeat center;
       background-size: cover;
     }
 
     .test-icon {
       width: 18px;
       height: 18px;
-      background: url('../assets/imgs/plugin/icon_gongju_test_act.png')
-        no-repeat center;
+      background: url('../assets/imgs/plugin/icon_gongju_test_act.png') no-repeat center;
       background-size: cover;
     }
   }
@@ -906,80 +864,70 @@
     .usermanage-icon {
       width: 18px;
       height: 18px;
-      background: url('../assets/imgs/sidebar/icon_nav_usersetting_act@2x.png')
-        no-repeat center;
+      background: url('../assets/imgs/sidebar/icon_nav_usersetting_act@2x.png') no-repeat center;
       background-size: cover;
     }
 
     .modelmanage-icon {
       width: 18px;
       height: 18px;
-      background: url('../assets/imgs/sidebar/icon_nav_model_normal@2x.png')
-        no-repeat center;
+      background: url('../assets/imgs/sidebar/icon_nav_model_normal@2x.png') no-repeat center;
       background-size: cover;
     }
 
     .overview-icon {
       width: 18px;
       height: 18px;
-      background: url('../assets/imgs/common/icon_bot_setting_preview_normal.png')
-        no-repeat center;
+      background: url('../assets/imgs/common/icon_bot_setting_preview_normal.png') no-repeat center;
       background-size: cover;
     }
 
     .flow-arrange-icon {
       width: 18px;
       height: 18px;
-      background: url('../assets/imgs/common/icon_flow__arrange.png') no-repeat
-        center;
+      background: url('../assets/imgs/common/icon_flow__arrange.png') no-repeat center;
       background-size: cover;
     }
 
     .base-icon {
       width: 18px;
       height: 18px;
-      background: url('../assets/imgs/knowledge/icon_zhishi_setting.png')
-        no-repeat center;
+      background: url('../assets/imgs/knowledge/icon_zhishi_setting.png') no-repeat center;
       background-size: cover;
     }
 
     .document-setting {
       width: 18px;
       height: 18px;
-      background: url('../assets/imgs/knowledge/icon_zhishi_setting.png')
-        no-repeat center;
+      background: url('../assets/imgs/knowledge/icon_zhishi_setting.png') no-repeat center;
       background-size: cover;
     }
 
     .document-icon {
       width: 18px;
       height: 18px;
-      background: url('../assets/imgs/knowledge/icon_zhishi_file.png') no-repeat
-        center;
+      background: url('../assets/imgs/knowledge/icon_zhishi_file.png') no-repeat center;
       background-size: cover;
     }
 
     .hit-icon {
       width: 18px;
       height: 18px;
-      background: url('../assets/imgs/knowledge/icon_zhishi_target.png')
-        no-repeat center;
+      background: url('../assets/imgs/knowledge/icon_zhishi_target.png') no-repeat center;
       background-size: cover;
     }
 
     .parameter-icon {
       width: 18px;
       height: 18px;
-      background: url('../assets/imgs/plugin/icon_gongju_adjust.png') no-repeat
-        center;
+      background: url('../assets/imgs/plugin/icon_gongju_adjust.png') no-repeat center;
       background-size: cover;
     }
 
     .test-icon {
       width: 18px;
       height: 18px;
-      background: url('../assets/imgs/plugin/icon_gongju_test.png') no-repeat
-        center;
+      background: url('../assets/imgs/plugin/icon_gongju_test.png') no-repeat center;
       background-size: cover;
     }
   }
@@ -991,80 +939,70 @@
     .usermanage-icon {
       width: 18px;
       height: 18px;
-      background: url('../assets/imgs/sidebar/icon_nav_usersetting1_act@2x.png')
-        no-repeat center;
+      background: url('../assets/imgs/sidebar/icon_nav_usersetting1_act@2x.png') no-repeat center;
       background-size: cover;
     }
 
     .modelmanage-icon {
       width: 18px;
       height: 18px;
-      background: url('../assets/imgs/sidebar/icon_nav_plugin_normal@2x.png')
-        no-repeat center;
+      background: url('../assets/imgs/sidebar/icon_nav_plugin_normal@2x.png') no-repeat center;
       background-size: cover;
     }
 
     .overview-icon {
       width: 18px;
       height: 18px;
-      background: url('../assets/imgs/common/icon_bot_setting_preview.png')
-        no-repeat center;
+      background: url('../assets/imgs/common/icon_bot_setting_preview.png') no-repeat center;
       background-size: cover;
     }
 
     .flow-arrange-icon {
       width: 18px;
       height: 18px;
-      background: url('../assets/imgs/common/icon_flow__arrange_act.png')
-        no-repeat center;
+      background: url('../assets/imgs/common/icon_flow__arrange_act.png') no-repeat center;
       background-size: cover;
     }
 
     .base-icon {
       width: 18px;
       height: 18px;
-      background: url('../assets/imgs/knowledge/icon_zhishi_setting_act.png')
-        no-repeat center;
+      background: url('../assets/imgs/knowledge/icon_zhishi_setting_act.png') no-repeat center;
       background-size: cover;
     }
 
     .document-setting {
       width: 18px;
       height: 18px;
-      background: url('../assets/imgs/knowledge/icon_zhishi_setting_act.png')
-        no-repeat center;
+      background: url('../assets/imgs/knowledge/icon_zhishi_setting_act.png') no-repeat center;
       background-size: cover;
     }
 
     .document-icon {
       width: 18px;
       height: 18px;
-      background: url('../assets/imgs/knowledge/icon_zhishi_file_act.png')
-        no-repeat center;
+      background: url('../assets/imgs/knowledge/icon_zhishi_file_act.png') no-repeat center;
       background-size: cover;
     }
 
     .hit-icon {
       width: 18px;
       height: 18px;
-      background: url('../assets/imgs/knowledge/icon_zhishi_target_act.png')
-        no-repeat center;
+      background: url('../assets/imgs/knowledge/icon_zhishi_target_act.png') no-repeat center;
       background-size: cover;
     }
 
     .parameter-icon {
       width: 18px;
       height: 18px;
-      background: url('../assets/imgs/plugin/icon_gongju_adjust_act.png')
-        no-repeat center;
+      background: url('../assets/imgs/plugin/icon_gongju_adjust_act.png') no-repeat center;
       background-size: cover;
     }
 
     .test-icon {
       width: 18px;
       height: 18px;
-      background: url('../assets/imgs/plugin/icon_gongju_test_act.png')
-        no-repeat center;
+      background: url('../assets/imgs/plugin/icon_gongju_test_act.png') no-repeat center;
       background-size: cover;
     }
   }
@@ -1205,6 +1143,7 @@
   .global-input,
   .global-input-area {
     border: 1px solid #e4eaff;
+
     &:hover {
       border-color: #275eff;
     }
@@ -1521,6 +1460,7 @@ textarea {
   background: #fff !important;
   border-radius: 4px !important;
   border: 1px solid #e4eaff !important;
+
   &:focus,
   &:focus-within {
     outline: none !important;
@@ -1532,13 +1472,16 @@ textarea {
 
 .ant-picker-outlined.params-select-time {
   border-color: #e4eaff;
+
   &:focus,
   &:focus-within {
     border: 1px solid #275eff !important;
   }
 }
+
 .ant-picker-disabled.params-select-time {
   background: #fff !important;
+
   &:hover {
     border: 1px solid #e4eaff !important;
   }
@@ -1701,8 +1644,7 @@ textarea {
       }
     }
 
-    blockquote::after {
-    }
+    blockquote::after {}
 
     ul {
       margin-top: 8px;
@@ -1742,7 +1684,7 @@ textarea {
     pre {
       white-space: wrap;
 
-      > div {
+      >div {
         border-radius: 4px;
         overflow: hidden;
       }
@@ -1804,6 +1746,7 @@ textarea {
 }
 
 @keyframes blink-cursor {
+
   0%,
   100% {
     opacity: 1;
@@ -1933,7 +1876,7 @@ textarea {
   height: 22px;
   gap: 6px;
 
-  > i {
+  >i {
     width: 8px;
     height: 8px;
     border-radius: 50%;
@@ -1941,19 +1884,20 @@ textarea {
     animation: fade 1.5s infinite;
   }
 
-  > i:first-child {
+  >i:first-child {
     animation-delay: 0s;
   }
 
-  > i:nth-child(2) {
+  >i:nth-child(2) {
     animation-delay: 0.3s;
   }
 
-  > i:last-child {
+  >i:last-child {
     animation-delay: 0.6s;
   }
 
   @keyframes fade {
+
     0%,
     100% {
       opacity: 0.1;
@@ -1990,24 +1934,21 @@ textarea {
     .tool {
       width: 18px;
       height: 18px;
-      background: url('../assets/imgs/workflow/tool-create-tool-active.png')
-        no-repeat center;
+      background: url('../assets/imgs/workflow/tool-create-tool-active.png') no-repeat center;
       background-size: cover;
     }
 
     .mcp {
       width: 18px;
       height: 18px;
-      background: url('../assets/imgs/workflow/tool-create-mcp-active.png')
-        no-repeat center;
+      background: url('../assets/imgs/workflow/tool-create-mcp-active.png') no-repeat center;
       background-size: cover;
     }
 
     .knowledge {
       width: 14px;
       height: 16px;
-      background: url('../assets/imgs/workflow/tool-knowledge-active.svg')
-        no-repeat center;
+      background: url('../assets/imgs/workflow/tool-knowledge-active.svg') no-repeat center;
       background-size: cover;
     }
   }
@@ -2015,24 +1956,21 @@ textarea {
   .tool {
     width: 18px;
     height: 18px;
-    background: url('../assets/imgs/workflow/tool-create-tool.png') no-repeat
-      center;
+    background: url('../assets/imgs/workflow/tool-create-tool.png') no-repeat center;
     background-size: cover;
   }
 
   .mcp {
     width: 18px;
     height: 18px;
-    background: url('../assets/imgs/workflow/tool-create-mcp.png') no-repeat
-      center;
+    background: url('../assets/imgs/workflow/tool-create-mcp.png') no-repeat center;
     background-size: cover;
   }
 
   .knowledge {
     width: 14px;
     height: 16px;
-    background: url('../assets/imgs/workflow/tool-knowledge.svg') no-repeat
-      center;
+    background: url('../assets/imgs/workflow/tool-knowledge.svg') no-repeat center;
     background-size: cover;
   }
 }
@@ -2052,16 +1990,14 @@ textarea {
     .offical {
       width: 14px;
       height: 14px;
-      background: url('../assets/imgs/workflow/tool-create-public-active.png')
-        no-repeat center;
+      background: url('../assets/imgs/workflow/tool-create-public-active.png') no-repeat center;
       background-size: cover;
     }
 
     .person {
       width: 14px;
       height: 14px;
-      background: url('../assets/imgs/workflow/tool-create-person-active.png')
-        no-repeat center;
+      background: url('../assets/imgs/workflow/tool-create-person-active.png') no-repeat center;
       background-size: cover;
     }
 
@@ -2076,16 +2012,14 @@ textarea {
   .offical {
     width: 14px;
     height: 14px;
-    background: url('../assets/imgs/workflow/tool-create-public.png') no-repeat
-      center;
+    background: url('../assets/imgs/workflow/tool-create-public.png') no-repeat center;
     background-size: cover;
   }
 
   .person {
     width: 14px;
     height: 14px;
-    background: url('../assets/imgs/workflow/tool-create-person.png') no-repeat
-      center;
+    background: url('../assets/imgs/workflow/tool-create-person.png') no-repeat center;
     background-size: cover;
   }
 
@@ -2098,7 +2032,7 @@ textarea {
 }
 
 .global-background {
-  background: linear-gradient(180deg, #ebf2fe 0%, #f8faff 100%);
+  background: linear-gradient(180deg, #E3F0FE 0%, #F6F9FF 100%);
 }
 
 .botSquare-background {
@@ -2191,8 +2125,7 @@ textarea {
 }
 
 .flow-tool-modal-left {
-  background: url('../assets/imgs/workflow/tool-modal-left.png') no-repeat
-    center;
+  background: url('../assets/imgs/workflow/tool-modal-left.png') no-repeat center;
   background-size: cover;
 }
 
@@ -2209,12 +2142,19 @@ textarea {
     word-break: break-all;
   }
 
-  font-family:
-    'Helvetica Neue', Helvetica, Arial, 'PingFang SC', 'Hiragino Sans GB',
-    'Heiti SC', 'Microsoft YaHei', 'WenQuanYi Micro Hei', sans-serif !important;
+  font-family: 'Helvetica Neue',
+  Helvetica,
+  Arial,
+  'PingFang SC',
+  'Hiragino Sans GB',
+  'Heiti SC',
+  'Microsoft YaHei',
+  'WenQuanYi Micro Hei',
+  sans-serif !important;
 }
 
 .dataset-excel-preview {
+
   td,
   th {
     padding: 12px;
@@ -2272,8 +2212,7 @@ textarea {
   &:hover {
     width: 28px;
     height: 28px;
-    background: url('../assets/imgs/model/tag_checked_active.png') no-repeat
-      center;
+    background: url('../assets/imgs/model/tag_checked_active.png') no-repeat center;
     background-size: cover;
   }
 }
@@ -2283,15 +2222,13 @@ textarea {
     cursor: pointer;
     width: 14px;
     height: 14px;
-    background: url('../assets/imgs/prompt/debugger-copy-icon.svg') no-repeat
-      center;
+    background: url('../assets/imgs/prompt/debugger-copy-icon.svg') no-repeat center;
     background-size: cover;
 
     &:hover {
       width: 14px;
       height: 14px;
-      background: url('../assets/imgs/prompt/debugger-copy-icon-hover.svg')
-        no-repeat center;
+      background: url('../assets/imgs/prompt/debugger-copy-icon-hover.svg') no-repeat center;
       background-size: cover;
     }
   }
@@ -2300,15 +2237,13 @@ textarea {
     cursor: pointer;
     width: 14px;
     height: 14px;
-    background: url('../assets/imgs/prompt/debugger-detail-icon.svg') no-repeat
-      center;
+    background: url('../assets/imgs/prompt/debugger-detail-icon.svg') no-repeat center;
     background-size: cover;
 
     &:hover {
       width: 14px;
       height: 14px;
-      background: url('../assets/imgs/prompt/debugger-detail-icon-hover.svg')
-        no-repeat center;
+      background: url('../assets/imgs/prompt/debugger-detail-icon-hover.svg') no-repeat center;
       background-size: cover;
     }
   }
@@ -2317,15 +2252,13 @@ textarea {
     cursor: pointer;
     width: 14px;
     height: 14px;
-    background: url('../assets/imgs/prompt/prompt-chat-refresh.svg') no-repeat
-      center;
+    background: url('../assets/imgs/prompt/prompt-chat-refresh.svg') no-repeat center;
     background-size: cover;
 
     &:hover {
       width: 14px;
       height: 14px;
-      background: url('../assets/imgs/prompt/prompt-chat-refresh-hover.svg')
-        no-repeat center;
+      background: url('../assets/imgs/prompt/prompt-chat-refresh-hover.svg') no-repeat center;
       background-size: cover;
     }
   }
@@ -2336,15 +2269,13 @@ textarea {
     cursor: pointer;
     width: 18px;
     height: 18px;
-    background: url('../assets/imgs/prompt/copy-benchmark-info.svg') no-repeat
-      center;
+    background: url('../assets/imgs/prompt/copy-benchmark-info.svg') no-repeat center;
     background-size: cover;
 
     &:hover {
       width: 18px;
       height: 18px;
-      background: url('../assets/imgs/prompt/copy-benchmark-info-hover.svg')
-        no-repeat center;
+      background: url('../assets/imgs/prompt/copy-benchmark-info-hover.svg') no-repeat center;
       background-size: cover;
     }
   }
@@ -2353,15 +2284,13 @@ textarea {
     cursor: pointer;
     width: 18px;
     height: 18px;
-    background: url('../assets/imgs/prompt/prompt-restore-canvas.svg') no-repeat
-      center;
+    background: url('../assets/imgs/prompt/prompt-restore-canvas.svg') no-repeat center;
     background-size: cover;
 
     &:hover {
       width: 18px;
       height: 18px;
-      background: url('../assets/imgs/prompt/prompt-restore-canvas-hover.svg')
-        no-repeat center;
+      background: url('../assets/imgs/prompt/prompt-restore-canvas-hover.svg') no-repeat center;
       background-size: cover;
     }
   }
@@ -2370,15 +2299,13 @@ textarea {
     cursor: pointer;
     width: 18px;
     height: 18px;
-    background: url('../assets/imgs/prompt/prompt-set-benchmark.svg') no-repeat
-      center;
+    background: url('../assets/imgs/prompt/prompt-set-benchmark.svg') no-repeat center;
     background-size: cover;
 
     &:hover {
       width: 18px;
       height: 18px;
-      background: url('../assets/imgs/prompt/prompt-set-benchmark-hover.svg')
-        no-repeat center;
+      background: url('../assets/imgs/prompt/prompt-set-benchmark-hover.svg') no-repeat center;
       background-size: cover;
     }
   }
@@ -2387,15 +2314,13 @@ textarea {
     cursor: pointer;
     width: 18px;
     height: 18px;
-    background: url('../assets/imgs/prompt/arrow-up-down-line.svg') no-repeat
-      center;
+    background: url('../assets/imgs/prompt/arrow-up-down-line.svg') no-repeat center;
     background-size: cover;
 
     &:hover {
       width: 18px;
       height: 18px;
-      background: url('../assets/imgs/prompt/arrow-up-down-line-hover.svg')
-        no-repeat center;
+      background: url('../assets/imgs/prompt/arrow-up-down-line-hover.svg') no-repeat center;
       background-size: cover;
     }
   }
@@ -2404,15 +2329,13 @@ textarea {
     cursor: pointer;
     width: 18px;
     height: 18px;
-    background: url('../assets/imgs/prompt/model-config-item-delete.svg')
-      no-repeat center;
+    background: url('../assets/imgs/prompt/model-config-item-delete.svg') no-repeat center;
     background-size: cover;
 
     &:hover {
       width: 18px;
       height: 18px;
-      background: url('../assets/imgs/prompt/model-config-item-delete-hover.svg')
-        no-repeat center;
+      background: url('../assets/imgs/prompt/model-config-item-delete-hover.svg') no-repeat center;
       background-size: cover;
     }
   }
@@ -2423,15 +2346,13 @@ textarea {
     cursor: pointer;
     width: 16px;
     height: 16px;
-    background: url('../assets/imgs/workflow/comparative-debugging-icon.svg')
-      no-repeat center;
+    background: url('../assets/imgs/workflow/comparative-debugging-icon.svg') no-repeat center;
     background-size: cover;
 
     &:hover {
       width: 16px;
       height: 16px;
-      background: url('../assets/imgs/workflow/comparative-debugging-icon-hover.svg')
-        no-repeat center;
+      background: url('../assets/imgs/workflow/comparative-debugging-icon-hover.svg') no-repeat center;
       background-size: cover;
     }
   }
@@ -2440,15 +2361,13 @@ textarea {
     cursor: pointer;
     width: 16px;
     height: 16px;
-    background: url('../assets/imgs/workflow/workflow-export-icon.svg')
-      no-repeat center;
+    background: url('../assets/imgs/workflow/workflow-export-icon.svg') no-repeat center;
     background-size: cover;
 
     &:hover {
       width: 16px;
       height: 16px;
-      background: url('../assets/imgs/workflow/flow-export-icon-active.svg')
-        no-repeat center;
+      background: url('../assets/imgs/workflow/flow-export-icon-active.svg') no-repeat center;
       background-size: cover;
     }
   }
@@ -2457,15 +2376,13 @@ textarea {
     cursor: pointer;
     width: 16px;
     height: 16px;
-    background: url('../assets/imgs/workflow/versionManagement-icon.svg')
-      no-repeat center;
+    background: url('../assets/imgs/workflow/versionManagement-icon.svg') no-repeat center;
     background-size: cover;
 
     &:hover {
       width: 16px;
       height: 16px;
-      background: url('../assets/imgs/workflow/versionManagement-icon-hover.svg')
-        no-repeat center;
+      background: url('../assets/imgs/workflow/versionManagement-icon-hover.svg') no-repeat center;
       background-size: cover;
     }
   }
@@ -2474,15 +2391,13 @@ textarea {
     cursor: pointer;
     width: 16px;
     height: 16px;
-    background: url('../assets/imgs/workflow/advanced-configuration-icon.svg')
-      no-repeat center;
+    background: url('../assets/imgs/workflow/advanced-configuration-icon.svg') no-repeat center;
     background-size: cover;
 
     &:hover {
       width: 16px;
       height: 16px;
-      background: url('../assets/imgs/workflow/advanced-configuration-icon-hover.svg')
-        no-repeat center;
+      background: url('../assets/imgs/workflow/advanced-configuration-icon-hover.svg') no-repeat center;
       background-size: cover;
     }
   }
@@ -2519,13 +2434,16 @@ textarea {
   font-size: 14px;
   box-shadow: none !important;
   font-weight: 400 !important;
+
   &::-webkit-scrollbar {
     display: none;
   }
+
   &::placeholder {
     color: #939393;
     font-weight: 400;
   }
+
   &:focus {
     border: none;
   }
@@ -2533,6 +2451,7 @@ textarea {
 
 /* 强制设置思考连中  MarkdownRender内部文本颜色 */
 .reasoning-markdown {
+
   div,
   p,
   li,
@@ -2540,13 +2459,16 @@ textarea {
     color: #838a95 !important;
     font-size: 14px !important;
   }
+
   p {
     line-height: 26px;
   }
+
   p:last-child {
     margin-bottom: 0;
   }
 }
+
 /* 复制按钮 */
 .copy-icon {
   svg {
@@ -2572,4 +2494,16 @@ textarea {
   span {
     pointer-events: none;
   }
+}
+
+
+.bg-add-icon {
+  width: 200px;
+  height: 200px;
+  position: absolute;
+  right: -40px;
+  bottom: -40px;
+  background: url('../assets/imgs/agent-creation/bg-add-icon.png') no-repeat center;
+  background-size: cover;
+  opacity: .1;
 }

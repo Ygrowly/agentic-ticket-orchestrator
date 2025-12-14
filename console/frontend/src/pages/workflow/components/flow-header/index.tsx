@@ -124,14 +124,11 @@ const FlowHeader: React.FC<FlowHeaderProps> = ({ children, currentFlow }) => {
   }, [location]);
 
   return (
-    <div onKeyDown={e => e.stopPropagation()}>
+    <div className="px-6" onKeyDown={e => e.stopPropagation()}>
       {editModal && currentFlow && (
         <FlowEdit currentFlow={currentFlow} setEditModal={setEditModal} />
       )}
-      <div
-        className="w-full h-[80px] bg-[#fff] border-b border-[#e2e8ff] flex justify-between px-6 py-5"
-        style={{ borderRadius: '0px 0px 24px 24px' }}
-      >
+      <div className="w-full h-[80px] bg-[#e7eefe] flex justify-between px-6 py-5 rounded-[0px_0px_20px_20px]">
         {/* 左侧返回 + 名称 */}
         <div className="relative flex items-center flex-1 gap-2">
           <img

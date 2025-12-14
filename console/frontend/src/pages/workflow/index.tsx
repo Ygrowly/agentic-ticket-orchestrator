@@ -125,7 +125,7 @@ const Index: React.ReactElement = () => {
     <div className="flex flex-col w-full h-full flow-container">
       <FlowModal />
       <FlowDrawer />
-      <CommunityQRCode />
+      {/* <CommunityQRCode /> */}
       {/* 聊天结果按钮 */}
       <div
         className="fixed right-0 top-[80px] bg-[#EBEFF4] border border-[#DFE4ED] mt-5"

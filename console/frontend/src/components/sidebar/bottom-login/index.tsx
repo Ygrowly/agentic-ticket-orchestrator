@@ -16,7 +16,6 @@ interface User {
 }
 
 interface BottomLoginProps {
-  isCollapsed: boolean;
   isLogin?: boolean;
   user?: User | undefined;
   isPersonCenterOpen: boolean;
@@ -26,7 +25,6 @@ interface BottomLoginProps {
 }
 
 const BottomLogin = ({
-  isCollapsed,
   isPersonCenterOpen,
   setIsPersonCenterOpen,
 }: BottomLoginProps): ReactElement => {
@@ -127,7 +125,7 @@ const BottomLogin = ({
                   handleLoginRedirect();
                 }}
               />
-              {!isCollapsed && (
+              {
                 <div className="flex items-center flex-1 overflow-hidden">
                   <div className="ml-2.5 cursor-pointer flex items-center relative flex-1 min-w-0">
                     <span
@@ -148,7 +146,7 @@ const BottomLogin = ({
                     </div>
                   </div>
                 </div>
-              )}
+              }
             </>
           ) : (
             <div className={styles.login_btn} onClick={handleLoginRedirect}>

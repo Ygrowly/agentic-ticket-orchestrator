@@ -18,7 +18,6 @@ import { PostChatItem } from '@/types/chat';
 
 // 最近使用列表组件Props接口
 interface RecentListProps {
-  isCollapsed: boolean;
   showRecent: boolean;
   setShowRecent: (show: boolean) => void;
   mixedChatList: any[];
@@ -27,7 +26,6 @@ interface RecentListProps {
 }
 
 const RecentList: FC<RecentListProps> = ({
-  isCollapsed,
   showRecent,
   setShowRecent,
   mixedChatList,
@@ -35,8 +33,6 @@ const RecentList: FC<RecentListProps> = ({
   handleDeleteChat,
 }) => {
   const { t } = useTranslation();
-
-  if (isCollapsed) return null;
 
   return (
     <div className="flex flex-col ml-3 flex-shrink-0 overflow-hidden">
@@ -105,7 +101,6 @@ const RecentList: FC<RecentListProps> = ({
 };
 
 interface MenuListProps {
-  isCollapsed: boolean;
   mixedChatList: PostChatItem[];
   onRefreshData?: () => void;
 }
@@ -117,31 +112,12 @@ const useMenuListHelpers = (
   setMobile: any,
   checkNeedCreateTeamFn: any,
   setMenuActiveKey: any,
-  setIsShowSpacePopover: any,
-  spaceButtonRef: any,
   handleToChat: any,
   setChatListId: any,
   setDeleteOpen: any,
   chatListId: string,
   onRefreshData?: () => void
 ) => {
-  // 动态设置 Popover 的最大高度
-  const updatePopoverMaxHeight = () => {
-    if (spaceButtonRef.current) {
-      const rect = spaceButtonRef.current.getBoundingClientRect();
-      const topPosition = rect.top;
-      document.documentElement.style.setProperty(
-        '--popover-top',
-        `${topPosition}px`
-      );
-    }
-  };
-
-  const handleShowSpacePopover = () => {
-    updatePopoverMaxHeight(); // 更新 CSS 变量
-    setIsShowSpacePopover((prev: boolean) => !prev);
-  };
-
   // Chat and favorites management
   const handleNavigateToChat = (item: any) => {
     handleToChat(item?.botId);
@@ -202,7 +178,6 @@ const useMenuListHelpers = (
   };
 
   return {
-    handleShowSpacePopover,
     handleNavigateToChat,
     handleDeleteChat,
     handleDeleteChatConfirm,
@@ -248,7 +223,6 @@ const useDynamicMenuList = (
 // Menu Tab Component
 const MenuTab: FC<{
   tab: any;
-  isCollapsed: boolean;
   menuActiveKey: string;
   hoverTab: string;
   setMenuActiveKey: (key: string) => void;
@@ -256,7 +230,6 @@ const MenuTab: FC<{
   navigate: any;
 }> = ({
   tab,
-  isCollapsed,
   menuActiveKey,
   hoverTab,
   setMenuActiveKey,
@@ -265,14 +238,10 @@ const MenuTab: FC<{
 }) => (
   <div
     key={`${tab?.subTitle}`}
-    className={`group relative flex items-center px-3 py-3 gap-2 cursor-pointer rounded-[10px] hover:bg-[#F8FAFF] hover:text-[#275EFF] ${
+    className={`group relative flex items-center px-3 py-3 gap-2 cursor-pointer rounded-[10px] hover:bg-[#F8FAFF] hover:text-[#265dfe] ${
       [menuActiveKey, hoverTab].includes(tab.activeTab)
-        ? 'bg-[#F8FAFF] text-[#275EFF]'
-        : 'text-[#7F7F7F]'
-    } ${
-      tab.subTitle === '插件广场' || tab.subTitle === '智能体广场'
-        ? ''
-        : !isCollapsed && 'ml-6'
+        ? 'bg-[#fff] text-[#265dfe]'
+        : 'text-[#666]'
     }`}
     onClick={() => {
       setMenuActiveKey(tab.activeTab);
@@ -290,16 +259,7 @@ const MenuTab: FC<{
       className="w-[18px] h-[18px] flex-shrink-0"
       alt=""
     />
-    {!isCollapsed && <span className="relative text-sm">{tab.subTitle}</span>}
-    {isCollapsed && (
-      <div
-        className={`rounded-lg bg-white shadow-[0px_0px_20px_0px_rgba(0,18,70,0.08)] text-[#333333] whitespace-nowrap py-3 px-5 absolute -top-1.5 left-[54px] z-[3] ${
-          hoverTab === tab.activeTab ? 'block' : 'hidden'
-        }`}
-      >
-        {tab.subTitle}
-      </div>
-    )}
+    {<span className="relative text-sm">{tab.subTitle}</span>}
   </div>
 );
 
@@ -331,11 +291,7 @@ const DeleteModal: FC<{
   </Modal>
 );
 
-const MenuList: FC<MenuListProps> = ({
-  isCollapsed,
-  mixedChatList,
-  onRefreshData,
-}) => {
+const MenuList: FC<MenuListProps> = ({ mixedChatList, onRefreshData }) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const location = useLocation();
@@ -350,7 +306,6 @@ const MenuList: FC<MenuListProps> = ({
     spaceName,
     spaceType,
     spaceId,
-    spaceAvatar,
     setIsShowSpacePopover,
   } = useSpaceStore();
 
@@ -364,15 +319,11 @@ const MenuList: FC<MenuListProps> = ({
   const [chatListId, setChatListId] = useState('');
   const [deleteOpen, setDeleteOpen] = useState(false);
 
-  // Refs
-  const spaceButtonRef = useRef<HTMLDivElement | null>(null);
-
   // Custom hooks
   const { handleToChat } = useChat();
 
   // Helper functions
   const {
-    handleShowSpacePopover,
     handleNavigateToChat,
     handleDeleteChat,
     handleDeleteChatConfirm,
@@ -384,8 +335,6 @@ const MenuList: FC<MenuListProps> = ({
     setMobile,
     checkNeedCreateTeamFn,
     setMenuActiveKey,
-    setIsShowSpacePopover,
-    spaceButtonRef,
     handleToChat,
     setChatListId,
     setDeleteOpen,
@@ -426,7 +375,6 @@ const MenuList: FC<MenuListProps> = ({
             <MenuTab
               key={`${i}-${tab?.subTitle}`}
               tab={tab}
-              isCollapsed={isCollapsed}
               menuActiveKey={menuActiveKey}
               hoverTab={hoverTab}
               setMenuActiveKey={setMenuActiveKey}
@@ -438,7 +386,6 @@ const MenuList: FC<MenuListProps> = ({
       ))}
 
       <RecentList
-        isCollapsed={isCollapsed}
         showRecent={showRecent}
         setShowRecent={setShowRecent}
         mixedChatList={mixedChatList}

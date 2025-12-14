@@ -70,14 +70,6 @@ export default [
       // 代码复杂度控制
       // TODO: refactor 暂时改成20
       complexity: ['warn', 40],
-      // TODO: refactor 暂时改成200
-      'max-lines-per-function': [
-        'warn',
-        {
-          max: 200,
-          IIFEs: true,
-        },
-      ],
       'max-params': ['warn', 5],
       // TODO: refactor 暂时改成warn
       'no-extra-boolean-cast': 'warn',
@@ -85,6 +77,7 @@ export default [
       'no-debugger': 'warn',
       'prefer-const': 'warn',
       'no-var': 'warn',
+      'max-lines-per-function': 'off',
     },
   },
   eslintConfigPrettier,

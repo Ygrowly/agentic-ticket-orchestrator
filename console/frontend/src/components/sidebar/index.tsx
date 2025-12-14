@@ -48,7 +48,6 @@ const Sidebar = ({
   user,
   OrderTypeComponent,
 }: SidebarProps): ReactElement => {
-  const [isCollapsed, setIsCollapsed] = useState(false);
   const [isPersonCenterOpen, setIsPersonCenterOpen] = useState(false);
 
   // Shared chat data state
@@ -80,47 +79,15 @@ const Sidebar = ({
 
   return (
     <div
-      className={`
-        relative bg-white flex flex-col flex-shrink-0 p-4 h-full
-        ${
-          isCollapsed
-            ? 'w-[76px] items-center justify-between'
-            : 'w-[232px] rounded-r-3xl'
-        }
-        ${className}
-      `}
+      className={`relative bg-transparent flex flex-col flex-shrink-0 p-4 h-full w-[232px]  ${className}`}
     >
-      {/* Collapse Icon */}
-      <div
-        className="
-          absolute -right-4 top-1/2 -translate-y-1/2 z-[997] 
-          flex items-center justify-center
-          w-8 h-8 bg-white rounded-full cursor-pointer
-          shadow-[0px_0px_20px_0px_rgba(0,18,70,0.08)]
-          hover:bg-[#275EFF] transition-colors duration-300
-          group
-        "
-        onClick={() => setIsCollapsed(!isCollapsed)}
-      >
-        <img
-          src={collapseGrayIcon}
-          alt="collapse"
-          className={`
-            transform rotate-180 transition-all duration-300 cursor-pointer z-[998]
-            group-hover:brightness-0 group-hover:saturate-100 group-hover:invert
-            ${isCollapsed ? 'rotate-[360deg]' : 'rotate-180'}
-          `}
-        />
-      </div>
-
       {/* Main Content */}
       <div className="flex flex-col h-full">
         {/* Logo Section */}
-        <SidebarLogo isCollapsed={isCollapsed} languageCode={languageCode} />
+        <SidebarLogo />
 
         {/* Create Button */}
         <CreateButton
-          isCollapsed={isCollapsed}
           isLogin={getIsLogin()}
           onClick={onCreateClick}
           onAnalytics={onCreateAnalytics}
@@ -128,7 +95,6 @@ const Sidebar = ({
         />
 
         <MenuList
-          isCollapsed={isCollapsed}
           mixedChatList={mixedChatList}
           onRefreshData={() => {
             getChatList();
@@ -137,7 +103,6 @@ const Sidebar = ({
 
         {/* Bottom Login */}
         <BottomLogin
-          isCollapsed={isCollapsed}
           user={user}
           OrderTypeComponent={OrderTypeComponent}
           isPersonCenterOpen={isPersonCenterOpen}

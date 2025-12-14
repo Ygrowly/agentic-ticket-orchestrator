@@ -305,7 +305,7 @@ export const zh = {
 
   // 侧边栏相关翻译
   sidebar: {
-    create: '创建',
+    create: '立即创建',
     recentlyUsed: '最近使用',
     favorites: '收藏',
     documentCenter: '文档中心',
