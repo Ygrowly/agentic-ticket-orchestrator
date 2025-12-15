@@ -14,7 +14,7 @@ const SidebarLogo = (): ReactElement => {
       <img
         src={agentLog}
         className="w-[140px] cursor-pointer"
-        alt="Pai Flow"
+        alt="PaiFlow"
         style={{ height: 'auto' }}
         onClick={handleLogoClick}
       />
