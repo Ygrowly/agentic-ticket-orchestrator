@@ -9,12 +9,14 @@ services:
   mysql:
     image: docker.m.daocloud.io/library/mysql:8.4
     container_name: paiflow-mysql
-    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci --default-character-set=utf8mb4
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-123456}
       MYSQL_DATABASE: paiflow-console
     volumes:
       - mysql_data:/var/lib/mysql
+      # Mount MySQL configuration
+      - ./mysql/my.cnf:/etc/mysql/conf.d/charset.cnf:ro
       # Mount initialization scripts
       - ./mysql:/docker-entrypoint-initdb.d
     networks:
