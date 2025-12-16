@@ -202,7 +202,7 @@ const ChatHeader = (props: {
   };
 
   return (
-    <div className="w-full h-20 bg-white flex justify-between items-center z-10 fixed rounded-b-[18px] shadow-sm">
+    <div className="w-[calc(100%-40px)] mx-[20px] h-20 bg-white flex justify-between items-center z-10 fixed rounded-b-[18px] shadow-sm">
       {/* 左侧区域 */}
       <div className="flex items-center justify-start h-full">
         <img

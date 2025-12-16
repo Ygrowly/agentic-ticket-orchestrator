@@ -79,34 +79,6 @@ const FlowStatus: React.FC<FlowStatusProps> = ({ flowResult, t }) => {
   );
 };
 
-interface FlowTabsProps {
-  currentTab: 'arrange' | 'overview';
-  id: string;
-  t: unknown;
-  navigate: ReturnType<typeof useNavigate>;
-}
-
-const FlowTabs: React.FC<FlowTabsProps> = ({ currentTab, id, t, navigate }) => (
-  <div className="flex items-center justify-center w-1/4 gap-4">
-    {['arrange'].map(tab => (
-      <div
-        key={tab}
-        className={`flex items-center justify-center py-2.5 px-8 rounded-xl font-medium cursor-pointer ${
-          currentTab === tab ? 'config-tabs-active' : 'config-tabs-normal'
-        }`}
-        onClick={() => navigate(`/work_flow/${id}/${tab}`, { replace: true })}
-      >
-        <span className={`${tab}-icon`}></span>
-        <span className="ml-2">
-          {t(
-            `workflow.nodes.header.${tab === 'arrange' ? 'arrange' : 'analysis'}`
-          )}
-        </span>
-      </div>
-    ))}
-  </div>
-);
-
 const FlowHeader: React.FC<FlowHeaderProps> = ({ children, currentFlow }) => {
   const { t } = useTranslation();
   const { id } = useParams<{ id: string }>();
@@ -128,7 +100,7 @@ const FlowHeader: React.FC<FlowHeaderProps> = ({ children, currentFlow }) => {
       {editModal && currentFlow && (
         <FlowEdit currentFlow={currentFlow} setEditModal={setEditModal} />
       )}
-      <div className="w-full h-[80px] bg-[#e7eefe] flex justify-between px-6 py-5 rounded-[0px_0px_20px_20px]">
+      <div className="w-full h-[80px] bg-gradient-to-b from-[#E3F0FE] to-[#F6F9FF] flex justify-between px-6 py-5 rounded-[0px_0px_20px_20px]">
         {/* 左侧返回 + 名称 */}
         <div className="relative flex items-center flex-1 gap-2">
           <img
@@ -140,7 +112,7 @@ const FlowHeader: React.FC<FlowHeaderProps> = ({ children, currentFlow }) => {
           <div className="relative flex items-center gap-4">
             <img
               src={currentFlow?.avatarIcon}
-              className="w-[39px] h-[39px]"
+              className="w-[39px] h-[39px] rounded-md"
               alt=""
             />
             <div className="flex flex-col h-full">
@@ -184,11 +156,6 @@ const FlowHeader: React.FC<FlowHeaderProps> = ({ children, currentFlow }) => {
             <FlowStatus flowResult={flowResult} t={t} />
           </div>
         </div>
-
-        {/* 中间 Tabs */}
-        {id && (
-          <FlowTabs currentTab={currentTab} id={id} t={t} navigate={navigate} />
-        )}
 
         {/* 右侧操作按钮 */}
         <div className="flex justify-end flex-1">{children}</div>

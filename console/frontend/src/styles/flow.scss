@@ -4,7 +4,7 @@
   font-weight: 500;
 
   .react-flow__node {
-    background: #fff;
+    background: linear-gradient(to bottom, #E3F0FE 0%, #F6F9FF 100%);
     border-radius: 8px;
     box-shadow: 0px 2px 4px 0px rgba(46, 51, 68, 0.0373);
     box-sizing: border-box;
@@ -101,8 +101,8 @@
     }
   }
 
-  .react-flow__panel{
-    margin:0px !important;
+  .react-flow__panel {
+    margin: 0px !important;
   }
 }
 
@@ -119,6 +119,7 @@
 }
 
 .small-size-markdown .global-markdown {
+
   p,
   div,
   span,
@@ -165,7 +166,7 @@
     height: 30px !important;
   }
 
-  .ant-select-selection-search > input {
+  .ant-select-selection-search>input {
     height: 25px !important;
   }
 }
@@ -255,16 +256,16 @@
 .flow-collapse-node-container {
   border-radius: 8px !important;
 
-  > .ant-collapse-item > .ant-collapse-header {
+  >.ant-collapse-item>.ant-collapse-header {
     background: #f8faff !important;
   }
 
-  > .ant-collapse-item > .ant-collapse-content {
+  >.ant-collapse-item>.ant-collapse-content {
     background: transparent !important;
     border-radius: 8px !important;
   }
 
-  & .ant-collapse-item:last-child > .ant-collapse-content {
+  & .ant-collapse-item:last-child>.ant-collapse-content {
     border-radius: 8px;
   }
 
@@ -277,7 +278,7 @@
     margin: 0px !important;
   }
 
-  > .ant-collapse-item {
+  >.ant-collapse-item {
     display: flex;
     flex-direction: column;
     gap: 18px;
@@ -298,6 +299,10 @@
 }
 
 .operation-result-container {
+  &.chat-result {
+    margin-top: 80px;
+  }
+
   .ant-drawer-content-wrapper {
     width: 530px !important;
     box-shadow: -2px 0px 10px 0px rgba(0, 0, 0, 0.05);
@@ -340,6 +345,17 @@
 
   .ant-drawer-content-wrapper {
     width: 554px !important;
+  }
+}
+
+.ant-drawer-content-wrapper {
+  width: 554px !important;
+  margin: 20px;
+  border-radius: 20px;
+  overflow: hidden;
+
+  .ant-drawer-content {
+    background-color: #e7eefe !important;
   }
 }
 

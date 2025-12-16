@@ -8,6 +8,7 @@ import JSONPretty from 'react-json-view';
 import MarkdownRender from '@/components/markdown-render';
 import { ResultNodeData, FlowResultType } from '@/components/workflow/types';
 import { Icons } from '@/components/workflow/icons';
+import { CloseOutlined } from '@ant-design/icons';
 
 const icons = Icons.chatResult;
 
@@ -137,7 +138,7 @@ function FlowChatResult(): React.ReactElement {
 
   return (
     <Drawer
-      rootClassName="operation-result-container"
+      rootClassName="operation-result-container chat-result"
       placement="right"
       open={flowChatResultOpen}
       mask={false}
@@ -151,14 +152,7 @@ function FlowChatResult(): React.ReactElement {
             className="flex items-center gap-2.5 cursor-pointer"
             onClick={() => setFlowChatResultOpen(false)}
           >
-            <span className="cursor-pointer text-base text-[#B1B1B1]">
-              {t('workflow.nodes.flowChatResult.collapse')}
-            </span>
-            <img
-              src={icons.chatResultOpen}
-              className="w-[14px] h-[14px]"
-              alt=""
-            />
+            <CloseOutlined />
           </div>
         </div>
 

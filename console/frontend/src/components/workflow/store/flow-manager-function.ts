@@ -1,7 +1,6 @@
 import { cloneDeep } from 'lodash';
 import { Node } from 'reactflow';
 import i18next from 'i18next';
-import { ErrNodeType } from '@/components/workflow/types';
 import {
   getFlowDetailAPI,
   saveFlowAPI,
@@ -19,6 +18,17 @@ import useFlowStore from './use-flow-store';
 import useIteratorFlowStore from './use-iterator-flow-store';
 import { FlowStoreType } from '../types/zustand/flow';
 import { UseBoundStore, StoreApi } from 'zustand';
+
+// 导入工作流节点图标
+import startNodeIcon from '@/assets/imgs/workflow/start-node-icon.png';
+import endNodeIcon from '@/assets/imgs/workflow/end-node-icon.png';
+import largeModelNodeIcon from '@/assets/imgs/workflow/large-model-node.png';
+import messageNodeIcon from '@/assets/imgs/workflow/message-node-icon.png';
+import serviceIcon from '@/assets/imgs/workflow/service-icon.png';
+import knowledgeIcon from '@/assets/imgs/workflow/knowledge-icon.png';
+import codeNodeIcon from '@/assets/imgs/workflow/code-node-icon.png';
+import variableMemoryIcon from '@/assets/imgs/workflow/variable-memory-icon.png';
+import variableExtractorIcon from '@/assets/imgs/workflow/variable-extractor-icon.png';
 
 export const initialStatus = {
   willAddNode: null,
@@ -344,13 +354,65 @@ export const initFlowData = async (id: string, set): Promise<void> => {
     getKnowledgeProStrategyAPI(),
   ]);
 
+  // 修改nodeTemplate中的icon值
+  const modifiedNodeTemplate = cloneDeep(nodeTemplate);
+  modifiedNodeTemplate.forEach(nodeCategory => {
+    nodeCategory.nodes.forEach(node => {
+      // 根据节点类型设置对应的icon
+      switch (node.idType) {
+        case 'node-start':
+          node.data.icon = startNodeIcon;
+          break;
+        case 'node-end':
+          node.data.icon = endNodeIcon;
+          break;
+        case 'iteration-node-start':
+          node.data.icon = startNodeIcon;
+          break;
+        case 'iteration-node-end':
+          node.data.icon = endNodeIcon;
+          break;
+        case 'spark-llm':
+        case 'decision-making':
+        case 'extractor-parameter':
+        case 'agent':
+        case 'knowledge-pro-base':
+        case 'question-answer':
+          node.data.icon = largeModelNodeIcon;
+          break;
+        case 'message-node':
+          node.data.icon = messageNodeIcon;
+          break;
+        case 'service-node':
+          node.data.icon = serviceIcon;
+          break;
+        case 'knowledge-node':
+        case 'knowledge-pro-node':
+          node.data.icon = knowledgeIcon;
+          break;
+        case 'code-node':
+          node.data.icon = codeNodeIcon;
+          break;
+        case 'variable-memory-node':
+          node.data.icon = variableMemoryIcon;
+          break;
+        case 'variable-extractor-node':
+          node.data.icon = variableExtractorIcon;
+          break;
+        // 默认保持原图标
+        default:
+          break;
+      }
+    });
+  });
+
   set({
     currentFlow: {
       ...flow,
       originData: flow?.data,
     },
     isLoading: false,
-    nodeList: nodeTemplate,
+    nodeList: modifiedNodeTemplate,
     textNodeConfigList,
     agentStrategy,
     knowledgeProStrategy,

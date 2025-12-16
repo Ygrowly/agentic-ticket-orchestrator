@@ -718,7 +718,7 @@ const translation = {
     uploadFileFormatError: '请上传png、jpg、jpeg格式文件！',
   },
   versionManagement: {
-    title: '版本与问题追踪',
+    title: '版本记录',
     versionRecord: '版本记录',
     feedbackRecord: '问题反馈记录',
     draftVersion: '草稿版本',

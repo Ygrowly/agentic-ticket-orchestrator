@@ -125,29 +125,16 @@ const Index: React.ReactElement = () => {
     <div className="flex flex-col w-full h-full flow-container">
       <FlowModal />
       <FlowDrawer />
-      {/* <CommunityQRCode /> */}
-      {/* 聊天结果按钮 */}
-      <div
-        className="fixed right-0 top-[80px] bg-[#EBEFF4] border border-[#DFE4ED] mt-5"
-        style={{
-          borderRadius: '21px 0 0 21px',
-          padding: '10px 17px 10px 28px',
-          zIndex: 998,
-        }}
-      >
-        <div
-          className="w-[22px] h-[22px] flex items-center justify-center bg-[#fff] shadow-sm rounded-md cursor-pointer"
-          onClick={() => setFlowChatResultOpen(true)}
-        >
-          <img src={chatResultClose} className="w-[10px] h-[10px]" alt="" />
-        </div>
-      </div>
       {/* 顶部工具栏 */}
-      <FlowHeader currentFlow={currentFlow}>
+      <FlowHeader
+        currentFlow={currentFlow}
+        setFlowChatResultOpen={setFlowChatResultOpen}
+      >
         {showNodeList ? (
           <BtnGroups
             publishModal={publishModal}
             setPublishModal={setPublishModal}
+            setFlowChatResultOpen={setFlowChatResultOpen}
           />
         ) : (
           <Button
@@ -166,7 +153,6 @@ const Index: React.ReactElement = () => {
       >
         <div className="w-full h-full">
           <div className="flex items-start w-full h-full px-6">
-            {showNodeList && <NodeList />}
             <FlowContainer zoom={zoom} setZoom={setZoom} />
           </div>
         </div>

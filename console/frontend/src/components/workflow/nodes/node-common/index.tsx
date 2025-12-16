@@ -51,12 +51,13 @@ export const Inputs = memo(({ label = '输入', inputs }) => {
     const hasError = item?.nameErrMsg || item?.schema?.value?.contentErrMsg;
 
     const containerStyle = {
-      backgroundColor: hasError ? '#F0AE784D' : '#F2F5FE',
+      backgroundColor: hasError ? '#F0AE784D' : '#00a83820',
       color: hasError ? '#ff7300' : '',
     };
 
     const labelStyle = {
-      color: hasError ? '#f4c69e' : '#7F7F7F',
+      color: hasError ? '#f4c69e' : '#999',
+      fontSize: '14px',
     };
 
     const displayName = item?.name?.trim() ? item?.name : '未定义';
@@ -97,7 +98,7 @@ export const Inputs = memo(({ label = '输入', inputs }) => {
 
   return (
     <>
-      <div className="text-xs text-[#333] text-right self-center">{label}</div>
+      <div className="text-xs text-[#999] text-right self-center">{label}</div>
       <div
         className="flex items-center gap-1.5 overflow-hidden relative"
         ref={elementRef}
@@ -139,15 +140,15 @@ export const Outputs = memo(({ data, label = '输出', outputs }) => {
     return (
       <div
         key={item?.id}
-        className="flex items-center gap-0.5 px-1 py-0.5 rounded text-base font-medium"
+        className="flex items-center gap-0.5 px-1 py-0.5 rounded text-[14px] font-medium"
         style={{
-          backgroundColor: item?.nameErrMsg ? '#F0AE784D' : '#F2F5FE',
+          backgroundColor: item?.nameErrMsg ? '#F0AE784D' : '#f2dfd1',
           color: item?.nameErrMsg ? '#ff7300' : '',
         }}
       >
         <span
           style={{
-            color: item?.nameErrMsg ? '#f4c69e' : '#7F7F7F',
+            color: item?.nameErrMsg ? '#f4c69e' : '#999',
           }}
         >
           {useFlowTypeRender(item)}
@@ -212,7 +213,7 @@ export const Outputs = memo(({ data, label = '输出', outputs }) => {
 
   return (
     <>
-      <div className="text-xs text-[#333] text-right self-center">{label}</div>
+      <div className="text-xs text-[#999] text-right self-center">{label}</div>
       <div
         className="flex items-center gap-1.5 overflow-hidden relative"
         ref={elementRef}
@@ -300,7 +301,7 @@ export const Label = memo(
           />
         ) : (
           <h2
-            className="text-base font-medium text-overflow"
+            className="text-[22px] font-medium text-overflow"
             style={{
               maxWidth: maxWidth,
             }}
@@ -343,7 +344,7 @@ export const ExceptionContent = memo(({ id, data }) => {
 export const Model = memo(({ model }) => {
   return (
     <>
-      <div className="text-[#333] text-right">模型</div>
+      <div className="text-[#999] text-right">模型</div>
       <div className="flex items-center gap-1">
         <img src={model?.icon} className="w-[14px] h-[14px]" alt="" />
         <span>{model?.name}</span>
@@ -408,7 +409,7 @@ export const NodeHeader = memo<NodeHeaderProps>(({ id, data }) => {
   return (
     <div className="w-full flex items-center justify-between px-[14px] relative pt-[14px]">
       <div className="flex items-center gap-3">
-        <img src={nodeIcon} className="w-[18px] h-[18px]" alt="" />
+        <img src={nodeIcon} className="w-[30px] h-[30px] rounded-md" alt="" />
         <Label id={id} data={data} />
         {renderTypeOneClickUpdate()}
       </div>

@@ -101,10 +101,14 @@ function index(): React.ReactElement {
       rootStyle={rootStyle}
       mask={false}
     >
-      <div className="w-full p-[14px] pb-[6px] sticky top-0 bg-white z-10">
+      <div className="w-full p-[14px] pb-[6px] sticky top-0 z-10">
         <div className="w-full flex items-center gap-3 justify-between">
           <div className="flex items-center gap-3">
-            <img src={nodeIcon} className="w-[18px] h-[18px]" alt="" />
+            <img
+              src={nodeIcon}
+              className="w-[30px] h-[30px] rounded-md"
+              alt=""
+            />
             <Label
               {...({
                 data,

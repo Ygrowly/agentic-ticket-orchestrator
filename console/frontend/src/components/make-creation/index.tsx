@@ -7,7 +7,7 @@ import WorkflowImportModal from './components/WorkflowImportModal';
 import { ImportOutlined, PlusOutlined } from '@ant-design/icons';
 
 import styles from './index.module.scss';
-
+import workflowIcon from '@/assets/imgs/workflow/workflow.png';
 interface MakeCreateModalProps {
   visible: boolean;
   onCancel: () => void;
@@ -29,8 +29,7 @@ const MakeCreateModal: React.FC<MakeCreateModalProps> = ({
     const req: any = {
       name: t('createAgent1.commonCustom') + Date.now(),
       botType: 0,
-      avatar:
-        'https://oss-beijing-m8.openstorage.cn/SparkBotProd/icon/common/emojiitem_00_10@2x.png',
+      avatar: workflowIcon,
       botDesc: '',
       botId: null,
       inputExample: ['', '', ''],

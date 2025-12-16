@@ -19,6 +19,7 @@ import publishModalIcon from '@/assets/imgs/workflow/publish-modal-icon.png';
 interface PublishHeaderProps {
   publishModal: boolean;
   setPublishModal: React.Dispatch<React.SetStateAction<boolean>>;
+  setFlowChatResultOpen: React.Dispatch<any>;
 }
 
 // 节点类型定义
@@ -157,6 +158,7 @@ const usePublishHeader = ({
 const PublishHeader: React.FC<PublishHeaderProps> = ({
   publishModal,
   setPublishModal,
+  setFlowChatResultOpen,
 }) => {
   const { t } = useTranslation();
   const { handleDebugger } = useFlowCommon();
@@ -322,6 +324,10 @@ const PublishHeader: React.FC<PublishHeaderProps> = ({
           </div>
         </div>
       )}
+
+      <div className="cursor-pointer" onClick={setFlowChatResultOpen}>
+        运行结果
+      </div>
     </div>
   );
 };

@@ -25,7 +25,7 @@ export const EndDetail = memo(props => {
   return (
     <div id={id}>
       <div className="p-[14px] pb-[6px]">
-        <div className="bg-[#fff] rounded-lg flex flex-col gap-[18px]">
+        <div className="rounded-lg flex flex-col gap-[18px]">
           {isEndNode && (
             <FLowCollapse
               label={

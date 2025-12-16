@@ -584,43 +584,17 @@ function VersionManagement({
               onClick={() => setOpen(false)}
             />
           </div>
-          <Tabs
-            activeKey={activeKey}
-            size="small"
-            className="flex flex-col flex-1 h-0 overflow-hidden version-feedback-tabs"
-            tabBarStyle={{ margin: '0 0 24px 0' }}
-            tabBarGutter={40}
-            onChange={key => setActiveKey(key)}
-          >
-            <Tabs.TabPane
-              tab={t('workflow.versionManagement.versionRecord')}
-              key="1"
-            >
-              <VersionList
-                selectedCardId={selectedCardId}
-                currentFlow={currentFlow}
-                t={t}
-                handleCardClick={handleCardClick}
-                restoreVerName={restoreVerName}
-                versionList={versionList}
-                setSelectedVersionData={setSelectedVersionData}
-                setIsOverlayVisible={setIsOverlayVisible}
-                handleDebugger={handleDebugger}
-              />
-            </Tabs.TabPane>
-            <Tabs.TabPane
-              tab={t('workflow.versionManagement.feedbackRecord')}
-              key="2"
-            >
-              <FeedbackList
-                t={t}
-                feedbackList={feedbackList}
-                selectedQsId={selectedQsId}
-                setSelectedQsId={setSelectedQsId}
-                handleViewDetail={handleViewDetail}
-              />
-            </Tabs.TabPane>
-          </Tabs>
+          <VersionList
+            selectedCardId={selectedCardId}
+            currentFlow={currentFlow}
+            t={t}
+            handleCardClick={handleCardClick}
+            restoreVerName={restoreVerName}
+            versionList={versionList}
+            setSelectedVersionData={setSelectedVersionData}
+            setIsOverlayVisible={setIsOverlayVisible}
+            handleDebugger={handleDebugger}
+          />
           {activeKey === TAB_TYPE['version'] && (
             <div className="flex mt-[30px]">
               <Button
@@ -645,16 +619,6 @@ function VersionManagement({
         setIsOverlayVisible={setIsOverlayVisible}
         selectedVersionData={selectedVersionData}
         publicResultData={publicResultData}
-      />
-      <FeedbackDialog
-        visible={visible}
-        detail={{
-          ...feedbackItem.current,
-          picUrl: feedbackItem.current.picUrl || '',
-          description: feedbackItem.current.description || '',
-        }}
-        onCancel={() => setVisible(false)}
-        detailMode={true}
       />
     </div>
   );

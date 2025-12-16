@@ -379,12 +379,6 @@ function index() {
                     </div>
                   </div>
 
-                  <div className="flex ml-24 gap-4">
-                    <div className={styles.angentType}>
-                      {k.version === 1 ? '智能体' : '工作流'}
-                    </div>
-                  </div>
-
                   <div
                     className="flex justify-between items-center mt-3"
                     style={{
