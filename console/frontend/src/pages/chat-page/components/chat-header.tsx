@@ -45,7 +45,7 @@ const ChatHeader = (props: {
         botId: botInfo.botId,
       })
         .then(() => {
-          message.success(t('home.collectionSuccess'));
+          message.success('收藏成功');
           setBotInfo({
             ...botInfo,
             isFavorite: 1,
@@ -60,7 +60,7 @@ const ChatHeader = (props: {
         botId: botInfo.botId,
       })
         .then(() => {
-          message.success(t('home.cancelCollectionSuccess'));
+          message.success('取消收藏');
           setBotInfo({
             ...botInfo,
             isFavorite: 0,

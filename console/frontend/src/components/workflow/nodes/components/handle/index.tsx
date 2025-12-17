@@ -179,7 +179,7 @@ export const SourceHandle = ({
               }}
             >
               <div className="flex items-center gap-1.5">
-                <img src={node?.data?.icon} className="w-5 h-5" alt="" />
+                <img src={node?.data?.icon} className="w-6 h-6" alt="" />
                 <span>{node?.aliasName}</span>
               </div>
               <img src={nodeListAdd} className="w-[13px] h-[13px]" alt="" />

@@ -12,7 +12,8 @@ import useToggle from '@/hooks/use-toggle';
 import { isCanPublish } from '@/services/flow';
 import { getAgentDetail } from '@/services/release-management';
 import { useBotStateStore } from '@/store/spark-store/bot-state';
-
+import debugIcon from '@/assets/imgs/workflow/debug.svg';
+import resultIcon from '@/assets/imgs/workflow/result.svg';
 import publishModalIcon from '@/assets/imgs/workflow/publish-modal-icon.png';
 
 // Props 类型定义
@@ -277,6 +278,7 @@ const PublishHeader: React.FC<PublishHeaderProps> = ({
             className="border border-[#265dfe] bg-[#265dfe] text-[#fff] px-4 flex items-center gap-2 h-9 rounded-lg cursor-pointer"
             onClick={() => handleDebugger()}
           >
+            <img src={debugIcon} className="w-6 h-6" alt="" />
             {t('workflow.nodes.header.debug')}
           </div>
         )}
@@ -325,7 +327,11 @@ const PublishHeader: React.FC<PublishHeaderProps> = ({
         </div>
       )}
 
-      <div className="cursor-pointer" onClick={setFlowChatResultOpen}>
+      <div
+        className="cursor-pointer text-[#265dfe] flex gap-2 items-center border-[1px] border-[#265dfe] rounded-lg px-4 h-9"
+        onClick={setFlowChatResultOpen}
+      >
+        <img src={resultIcon} className="w-5 h-5" alt="" />
         运行结果
       </div>
     </div>

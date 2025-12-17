@@ -93,39 +93,15 @@ const TabHeader = ({
   setActiveTab,
 }): React.ReactElement => {
   return (
-    <>
-      <div className="text-second text-base font-semibold mb-4 flex items-center justify-between">
-        <span>选择图标</span>
-        <img
-          src={close}
-          className="w-3 h-3 cursor-pointer"
-          alt=""
-          onClick={() => setShowModal(false)}
-        />
-      </div>
-      <div className="flex items-center gap-4">
-        {avatarFilterGenerationMethods.map((item, index) => (
-          <div
-            key={index}
-            className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-lg cursor-pointer ${[activeTab, hoverTab].includes(item.activeTab) ? 'text-[#275EFF] bg-[#F6F9FF]' : ''}`}
-            onMouseEnter={() => setHoverTab(item.activeTab)}
-            onMouseLeave={() => setHoverTab('')}
-            onClick={() => setActiveTab(item.activeTab)}
-          >
-            <img
-              src={
-                [activeTab, hoverTab].includes(item.activeTab)
-                  ? item.iconAct
-                  : item.icon
-              }
-              className="w-[18px] h-[18px]"
-              alt=""
-            />
-            <span className="font-medium">{item.title}</span>
-          </div>
-        ))}
-      </div>
-    </>
+    <div className="text-second text-base font-semibold mb-4 flex items-center justify-between">
+      <span>选择图标</span>
+      <img
+        src={close}
+        className="w-3 h-3 cursor-pointer"
+        alt=""
+        onClick={() => setShowModal(false)}
+      />
+    </div>
   );
 };
 

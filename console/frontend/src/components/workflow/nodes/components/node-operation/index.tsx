@@ -273,7 +273,7 @@ function index({ data, id, labelInput = 'labelInput' }): React.ReactElement {
             <Tooltip title="测试该节点" overlayClassName="black-tooltip">
               <img
                 src={Icons.nodeOperation.nodeDebugger}
-                className="w-4 h-4 cursor-pointer"
+                className="w-5 h-5 cursor-pointer"
                 alt=""
                 onClick={() => {
                   handleNodeDebug();
@@ -288,7 +288,7 @@ function index({ data, id, labelInput = 'labelInput' }): React.ReactElement {
             <Tooltip title="重命名" overlayClassName="black-tooltip">
               <img
                 src={Icons.nodeOperation.nodeEdit}
-                className="w-4 h-4 cursor-pointer"
+                className="w-5 h-5 cursor-pointer"
                 alt=""
                 onClick={(e): void => {
                   e.stopPropagation();

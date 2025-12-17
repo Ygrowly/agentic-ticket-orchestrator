@@ -122,7 +122,7 @@ const MessageAsk = ({ chat, renderInputElement }): React.ReactElement => {
       <div className="flex items-center gap-4">
         <img src={icons.chatUser} className="w-9 h-9" alt="" />
       </div>
-      <div className="w-fit min-w-[50px] bg-[#275EFF] p-3 flex flex-col gap-2.5 rounded-xl overflow-hidden">
+      <div className="chat-bubble w-fit shadow min-w-[50px] border-[#275EFF] bg-[#275EFF] p-3 flex flex-col gap-2.5 rounded">
         {chat?.inputs?.map((input, index) => (
           <div key={index}>
             {renderInputElement(chat as ChatListItemExtended, input)}
@@ -224,20 +224,11 @@ const MessageActions = ({
   return (
     <>
       {(index !== chatList?.length - 1 || !debuggering) && (
-        <div className="flex justify-end mt-1">
+        <div className="flex justify-end px-4 py-2">
           <div
             className="inline-flex items-center justify-end gap-1.5 ml-6 shrink-0"
             onClick={e => e.stopPropagation()}
           >
-            <img
-              src={icons.feedback}
-              className="w-[16px] cursor-pointer"
-              alt=""
-              onClick={() => {
-                setSid((chat as ChatListItemExtended).sid);
-                setVisible(true);
-              }}
-            />
             <img
               src={
                 (chat as ChatListItemExtended).copied
@@ -417,9 +408,9 @@ const MessageReply = ({
             background: `url(${currentFlow?.avatarIcon}) no-repeat center / cover`,
           }}
         ></div>
-        <div>
+        <div className="chat-bubble border-white min-w-[100px]">
           {chat?.reasoningContent && (
-            <div className="inline-flex items-center rounded-md px-[14px] py-[7px] bg-[#f5f5f5] hover:bg-[#ededed] mb-2 gap-2">
+            <div className="inline-flex items-center rounded px-[14px] py-[7px] bg-[#fff] hover:bg-[#ededed] mb-2 gap-2">
               <svg
                 width="15"
                 height="15"
@@ -443,28 +434,31 @@ const MessageReply = ({
               <span>{t('workflow.nodes.chatDebugger.deepThinking')}</span>
             </div>
           )}
-          <div className="rounded-xl p-4  relative flex-1 bg-[#f7f7fa]">
-            <MessageReplyContent
-              chat={chat}
-              debuggering={debuggering}
-              index={index}
-              chatList={chatList}
-              handleResumeChat={handleResumeChat}
-            />
-            {index === chatList?.length - 1 &&
-              debuggering &&
-              !chat?.messageContent &&
-              !chat?.reasoningContent &&
-              !chat?.content && (
-                <div className="flex items-center gap-2.5">
-                  <span>{t('workflow.nodes.chatDebugger.generating')}</span>
-                  <img
-                    src={icons.chatLoading}
-                    className="w-5 h-5 flow-rotate-center"
-                    alt=""
-                  />
-                </div>
-              )}
+          <div className="rounded relative flex-1 bg-[#fff]">
+            <div className="p-4">
+              <MessageReplyContent
+                chat={chat}
+                debuggering={debuggering}
+                index={index}
+                chatList={chatList}
+                handleResumeChat={handleResumeChat}
+              />
+              {index === chatList?.length - 1 &&
+                debuggering &&
+                !chat?.messageContent &&
+                !chat?.reasoningContent &&
+                !chat?.content && (
+                  <div className="flex items-center gap-2.5">
+                    <span>{t('workflow.nodes.chatDebugger.generating')}</span>
+                    <img
+                      src={icons.chatLoading}
+                      className="w-5 h-5 flow-rotate-center"
+                      alt=""
+                    />
+                  </div>
+                )}
+            </div>
+            <div className="w-full h-[1px] border-b-[#eee] border-dashed border-[1px]"></div>
             <MessageActions
               chat={chat}
               index={index}

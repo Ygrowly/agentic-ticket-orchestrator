@@ -44,22 +44,6 @@ const PromptSection = ({
           <h4 className="text-base font-medium">
             {t('workflow.nodes.largeModelNode.prompt')}
           </h4>
-          {!canvasesDisabled && (
-            <div
-              className="flex items-center gap-1 cursor-pointer text-[#275EFF] text-xs"
-              onClick={e => {
-                e.stopPropagation();
-                setSelectPromptModalInfo({ open: true, nodeId: id });
-              }}
-            >
-              <img
-                src={promptLibraryIcon}
-                className="w-[14px] h-[14px]"
-                alt=""
-              />
-              <span>{t('workflow.nodes.largeModelNode.promptLibrary')}</span>
-            </div>
-          )}
         </div>
       }
       content={
@@ -269,8 +253,8 @@ export const LargeModelDetail = memo(({ id, data }): React.ReactElement => {
   });
 
   return (
-    <div className="p-[14px] pb-[6px]">
-      <div className="bg-[#fff] rounded-lg w-full flex flex-col gap-2.5">
+    <div className="p-[14px] pb-4">
+      <div className="bg-[#e7eefe] rounded-lg w-full flex flex-col gap-2.5">
         <ModelSection id={id} data={data} />
         <Inputs id={id} data={data} />
         <PromptSection

@@ -466,6 +466,7 @@ export const useFlowCommon = (): UseFlowCommonReturn => {
       sourceHandle: string | null,
       currentNode: NewNodeType
     ): void => {
+      debugger;
       const addNodes = handleAddNode(addNode, position);
       addNodes && addEdge(sourceHandle, currentNode, addNodes[0]);
       setBeforeNode({

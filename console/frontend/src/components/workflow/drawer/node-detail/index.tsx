@@ -101,7 +101,7 @@ function index(): React.ReactElement {
       rootStyle={rootStyle}
       mask={false}
     >
-      <div className="w-full p-[14px] pb-[6px] sticky top-0 z-10">
+      <div className="w-full p-[14px] pb-[6px] sticky top-0 z-10 bg-[#e7eefe]">
         <div className="w-full flex items-center gap-3 justify-between">
           <div className="flex items-center gap-3">
             <img

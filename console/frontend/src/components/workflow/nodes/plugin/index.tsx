@@ -8,7 +8,7 @@ export const ToolDetail = memo((props: unknown): React.ReactElement => {
 
   return (
     <div className="p-[14px] pb-[6px]">
-      <div className="bg-[#fff] rounded-lg flex flex-col gap-2.5">
+      <div className="bg-[#e7eefe] rounded-lg flex flex-col gap-2.5">
         <FixedInputs id={id} data={data} />
         <FixedOutputs id={id} data={data} />
         <ExceptionHandling id={id} data={data} />

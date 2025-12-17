@@ -17,7 +17,6 @@ import LoadingAnimate from '@/constants/lottie-react/chat-loading.json';
 import { Progress, Skeleton } from 'antd';
 import useUserStore from '@/store/user-store';
 import useChatStore from '@/store/chat-store';
-import { getLanguageCode } from '@/utils/http';
 import Lottie from 'lottie-react';
 import DeepThinkProgress from './deep-think-progress';
 import MarkdownRender from '@/components/markdown-render';
@@ -29,6 +28,8 @@ import { formatFileSize, getFileIcon } from '@/utils';
 import FilePreview from './file-preview';
 import ResqBottomButtons from './resq-bottom-buttons';
 import { useTranslation } from 'react-i18next';
+import loginAvatar from '@/assets/imgs/sidebar/avator.png';
+
 //渲染全新开始
 const renderRestart = (): ReactElement => {
   return (
@@ -162,7 +163,11 @@ const MessageList = (props: {
         key={item.id}
         className="max-w-[90%] text-white py-2.5 flex flex-row-reverse leading-[1.4] ml-auto h-auto"
       >
-        <img src={user?.avatar} alt="" className="h-9 w-9 rounded-full ml-4" />
+        <img
+          src={user?.avatar || loginAvatar}
+          alt=""
+          className="h-9 w-9 rounded-full ml-4"
+        />
         <div className="bg-[#275eff] rounded-[12px_0px_12px_12px] p-[14px_19px] relative max-w-full">
           <div className="text-base font-normal text-white leading-[25px] whitespace-pre-wrap w-auto break-words">
             {item.message}
