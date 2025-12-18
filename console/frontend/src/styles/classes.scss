@@ -1608,6 +1608,12 @@ textarea {
 .markdown-body {
   background: transparent;
 
+  table tr,
+  img {
+    color: #333;
+    background-color: white !important;
+  }
+
   .global-markdown {
     color: #1d2939;
     width: 100%;

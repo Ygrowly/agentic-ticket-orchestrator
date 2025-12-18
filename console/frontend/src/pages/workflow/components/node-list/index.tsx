@@ -67,8 +67,8 @@ const NodeList: React.FC<NodeListProps> = ({
           <div
             className="h-full overflow-hidden"
             style={{
-              width: openNodeList ? '16%' : 0,
-              minWidth: '240px',
+              width: openNodeList ? '10%' : 0,
+              minWidth: '160px',
             }}
           >
             <div className="h-full pt-6 pb-12 text-[#333] flex flex-col gap-2 transition-all">
@@ -184,10 +184,10 @@ const NodeList: React.FC<NodeListProps> = ({
           </div>
         ) : (
           <div
-            className="fixed left-0 top-[80px] bg-[#EBEFF4] border border-[#DFE4ED] mt-5"
+            className="fixed left-[20px] top-[80px] bg-[#EBEFF4] border border-[#DFE4ED] mt-5"
             style={{
-              borderRadius: '0 21px 21px 0',
-              padding: '10px 17px 10px 28px',
+              borderRadius: '20px',
+              padding: '10px',
               zIndex: 998,
             }}
           >

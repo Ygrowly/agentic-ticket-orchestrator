@@ -153,6 +153,7 @@ const Index: React.ReactElement = () => {
       >
         <div className="w-full h-full">
           <div className="flex items-start w-full h-full px-6">
+            {showNodeList && <NodeList />}
             <FlowContainer zoom={zoom} setZoom={setZoom} />
           </div>
         </div>
