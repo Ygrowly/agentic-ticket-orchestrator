@@ -214,6 +214,10 @@ public abstract class AbstractNodeExecutor implements NodeExecutor {
             String outputName = entry.getKey();
             Object outputValue = entry.getValue();
 
+            if (outputValue == null) {
+                continue;
+            }
+
             variablePool.set(nodeId, outputName, outputValue);
 
             if (log.isDebugEnabled()) {

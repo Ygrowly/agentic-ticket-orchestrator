@@ -22,6 +22,21 @@ spring:
       connection-test-query: SELECT 1
       validation-timeout: 5000
   
+  # Link数据库配置
+  link-datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://${MYSQL_HOST:localhost}:${MYSQL_PORT:3306}/${MYSQL_LINK_DB:paiflow-link}?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
+    username: ${MYSQL_USER:root}
+    password: ${MYSQL_PASSWORD:}
+    hikari:
+      maximum-pool-size: 20
+      minimum-idle: 5
+      connection-timeout: 30000
+      idle-timeout: 600000
+      max-lifetime: 580000
+      connection-test-query: SELECT 1
+      validation-timeout: 5000
+  
   # Redis 配置
   data:
     redis:
@@ -54,7 +69,7 @@ spring:
 # MyBatis Plus 配置
 mybatis-plus:
   mapper-locations: classpath*:/mapper/**/*.xml
-  type-aliases-package: com.iflytek.astron.workflow.entity
+  type-aliases-package: com.iflytek.astron.workflow.flow.entity,com.iflytek.astron.link.tools.entity
   configuration:
     map-underscore-to-camel-case: true
     cache-enabled: false
@@ -75,6 +90,7 @@ management:
       base-path: /actuator
   endpoint:
     health:
+      # 上线时，推荐将下面的改成never，避免安全问题
       show-details: always
   health:
     redis:
@@ -110,8 +126,9 @@ workflow:
   services:
     # 模型服务地址
     model-service-url: ${MODEL_SERVICE_URL:http://console-hub:8080}
-    # AI Tools 服务地址，对应的是Python link服务
-    aitools-url: ${AITOOLS_URL:http://localhost:18888}
+    # AI Tools 服务地址，如果选择是Python link服务 则将端口号改为 18888
+    # 现在workflow-java的版本中，已将http相关的外部工具调用，迁移到 com.iflytek.astron.link 下了，因此下面是直接调用本机服务来实现工具执行
+    aitools-url: ${AITOOLS_URL:http://localhost:7880}
     # Python Workflow 服务地址（用于对比参考）
     python-workflow-url: ${PYTHON_WORKFLOW_URL:http://core-workflow-python:7880}
 
