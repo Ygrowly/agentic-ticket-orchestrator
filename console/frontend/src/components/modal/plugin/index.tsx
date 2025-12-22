@@ -226,8 +226,8 @@ const AuthorizationFields: React.FC = () => {
             message: t('plugin.pleaseEnterParameterName'),
           },
           {
-            pattern: /^[a-zA-Z_][a-zA-Z0-9_]*$/,
-            message: t('common.onlyLettersNumbersUnderscore'),
+            pattern: /^[a-zA-Z_][a-zA-Z0-9_-]*$/,
+            message: t('common.onlyLettersNumbersDashUnderscore'),
           },
         ]}
       >

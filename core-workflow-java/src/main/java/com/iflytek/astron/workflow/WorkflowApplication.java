@@ -1,10 +1,9 @@
 package com.iflytek.astron.workflow;
 
+import com.iflytek.astron.link.tools.config.LinkConfiguration;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-
-import java.util.HashMap;
-import java.util.Map;
+import org.springframework.context.annotation.Import;
 
 /**
  * Java Workflow 应用启动类
@@ -13,6 +12,7 @@ import java.util.Map;
  * @version 1.0.0
  */
 @SpringBootApplication
+@Import(LinkConfiguration.class)
 public class WorkflowApplication {
     public static void main(String[] args) {
         SpringApplication.run(WorkflowApplication.class, args);
