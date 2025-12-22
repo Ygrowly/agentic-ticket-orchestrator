@@ -1,6 +1,7 @@
 package com.iflytek.astron.link.execution;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.iflytek.astron.link.cache.RedisService;
 import com.iflytek.astron.link.constant.LinkConstants;
 import com.iflytek.astron.link.constant.LinkErrorCode;
 import com.iflytek.astron.link.controller.vo.req.HttpToolRunRequest;
@@ -29,6 +30,9 @@ public class ToolExecutionService {
 
     @Autowired
     private ToolCrudService toolCrudService;
+
+    @Autowired
+    private RedisService redisService;
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 
@@ -245,6 +249,81 @@ public class ToolExecutionService {
         }
     }
 
+    /**
+     * 处理请求认证
+     *
+     * @param operationIdSchema 操作ID模式
+     * @param messageHeader     消息头部
+     * @param messageQuery      消息查询参数
+     * @param toolId            工具ID
+     */
+    private void processAuthentication(
+            Map<String, Object> openApiSchema,
+            Map<String, Object> operationIdSchema,
+            Map<String, Object> messageHeader,
+            Map<String, Object> messageQuery,
+            String toolId,
+            String version) throws Exception {
+        // 检查是否有安全配置
+        Object securityObj = operationIdSchema.get("security");
+        if (securityObj == null) {
+            return;
+        }
+
+        // 获取安全类型
+        String securityType = (String) operationIdSchema.get("security_type");
+        if (securityType == null || securityType.isEmpty()) {
+            return;
+        }
+
+        // 从Redis获取工具配置
+        Map<String, Object> redisCache = redisService.getToolConfig(toolId, version);
+        if (redisCache == null) {
+            throw new Exception("security: get redis_cache is none!");
+        }
+
+        // 获取认证信息
+        @SuppressWarnings("unchecked")
+        Map<String, Object> authInfo = (Map<String, Object>) redisCache.get("authentication");
+        if (authInfo == null) {
+            throw new Exception("security: redis_cache get authentication is none!");
+        }
+
+        // 根据安全类型处理认证
+        @SuppressWarnings("unchecked")
+        Map<String, Object> securityScheme = (Map<String, Object>) ((Map<String, Object>) ((Map<String, Object>) openApiSchema.get("components"))
+                .get("securitySchemes")).get(securityType);
+
+        if (securityScheme != null) {
+            String type = (String) securityScheme.get("type");
+
+            // API Key认证
+            if ("apiKey".equals(type)) {
+                @SuppressWarnings("unchecked")
+                Map<String, Object> apiKeyDict = (Map<String, Object>) authInfo.get("apiKey");
+                if (apiKeyDict != null) {
+                    String inLocation = (String) securityScheme.get("in");
+                    if ("header".equals(inLocation)) {
+                        messageHeader.putAll(apiKeyDict);
+                    } else if ("query".equals(inLocation)) {
+                        messageQuery.putAll(apiKeyDict);
+                    }
+                }
+            }
+            // Bearer Token认证
+            else if ("http".equals(type)) {
+                String scheme = (String) securityScheme.get("scheme");
+                if ("bearer".equals(scheme)) {
+                    // 获取Bearer Token
+                    String bearerToken = (String) authInfo.get("bearerToken");
+                    if (bearerToken != null && !bearerToken.isEmpty()) {
+                        messageHeader.put("Authorization", "Bearer " + bearerToken);
+                    }
+                }
+            }
+        }
+    }
+
     private HttpToolRunResponse handleRequestExecution(
             Map<String, Object> operationIdSchema,
             String toolType,
@@ -263,6 +342,17 @@ public class ToolExecutionService {
             Map<String, Object> messageQuery = decodeBase64Json((String) message.get("query"));
             Map<String, Object> path = decodeBase64Json((String) message.get("path"));
             Map<String, Object> body = decodeBase64Json((String) message.get("body"));
+
+            // 处理认证
+            try {
+                processAuthentication(openApiSchema, operationIdSchema, messageHeader, messageQuery, toolId, version);
+            } catch (Exception authErr) {
+                String errMsg = authErr.getMessage();
+                if (errMsg != null && errMsg.contains("Security type")) {
+                    return handleCustomError(LinkErrorCode.OPENAPI_AUTH_TYPE_ERR, LinkErrorCode.OPENAPI_AUTH_TYPE_ERR.getMessage(), sid, toolId, toolType);
+                }
+                throw authErr;
+            }
 
             // 执行HTTP请求
             String serverUrl = (String) operationIdSchema.get("server_url");
@@ -348,6 +438,19 @@ public class ToolExecutionService {
                             Object security = operation.get("security");
                             if (security != null) {
                                 operationSchema.put("security", security);
+
+                                // 获取安全类型
+                                if (security instanceof List) {
+                                    List<?> securityList = (List<?>) security;
+                                    if (!securityList.isEmpty() && securityList.get(0) instanceof Map) {
+                                        Map<?, ?> securityMap = (Map<?, ?>) securityList.get(0);
+                                        if (!securityMap.isEmpty()) {
+                                            // 获取第一个键作为安全类型
+                                            String securityType = securityMap.keySet().iterator().next().toString();
+                                            operationSchema.put("security_type", securityType);
+                                        }
+                                    }
+                                }
                             }
 
                             // 获取其他相关信息

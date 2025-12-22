@@ -23,6 +23,16 @@
             refid="Base_Column_List" /> FROM tools_schema WHERE tool_id = #{toolId} AND version =
         #{version} AND is_deleted = 0 </select>
 
+
+    <select id="selectByToolIdAndVersions" resultMap="BaseResultMap">SELECT
+        <include refid="Base_Column_List"/>
+        FROM tools_schema WHERE
+        <foreach collection="query" item="item" separator=" OR ">
+            (tool_id = #{item.toolId} AND version = #{item.version})
+        </foreach>
+        AND is_deleted = 0
+    </select>
+
     <!-- 软删除工具 -->
     <update id="softDeleteByToolIdAndVersion"> UPDATE tools_schema SET is_deleted = #{isDeleted}
         WHERE tool_id = #{toolId} AND version = #{version} </update>

@@ -36,14 +36,14 @@ spring:
       max-lifetime: 580000
       connection-test-query: SELECT 1
       validation-timeout: 5000
-  
+
   # Redis 配置
   data:
     redis:
       host: ${REDIS_HOST:localhost}
       port: ${REDIS_PORT:6379}
       password: ${REDIS_PASSWORD:}
-      database: 0
+      database: 1 # 注意需要和hub应用的保持一致
       lettuce:
         pool:
           max-active: 20

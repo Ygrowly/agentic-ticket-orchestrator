@@ -51,13 +51,10 @@ public class ToolCrudService extends ServiceImpl<ToolMapper, ToolEntity> {
 
     public List<ToolEntity> getTools(List<ToolEntity> tools) {
         // 实现获取工具逻辑
-        List<ToolEntity> result = new ArrayList<>();
-
+        List<ToolMapper.ToolIdQuery> query = new ArrayList<>();
         for (ToolEntity tool : tools) {
-            List<ToolEntity> queriedTools = toolMapper.selectByToolIdAndVersion(tool.getToolId(), tool.getVersion());
-            result.addAll(queriedTools);
+            query.add(new ToolMapper.ToolIdQuery(tool.getToolId(), tool.getVersion()));
         }
-
-        return result;
+        return toolMapper.selectByToolIdAndVersions(query);
     }
 }

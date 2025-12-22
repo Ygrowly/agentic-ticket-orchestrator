@@ -346,6 +346,11 @@ public class ToolBoxService extends ServiceImpl<ToolBoxMapper, ToolBox> {
                     urlCheckTool.checkUrl(newToolBox.getEndPoint());
                 }
                 save(newToolBox);
+
+                // Write tool authentication data to redis
+                if (toolBoxDto.getAuthType() != ToolConst.AuthType.NONE) {
+                    writeAuthInfoToRedis(toolBox.getToolId(), toolBoxDto);
+                }
                 // Tool side add version interface
                 ToolProtocolDto toolProtocolDto = buildToolRequest(toolBoxDto, schemaString);
                 ToolResp toolCreateResp = toolServiceCallHandler.toolUpdate(toolProtocolDto);
