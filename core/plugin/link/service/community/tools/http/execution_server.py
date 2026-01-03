@@ -763,7 +763,7 @@ async def tool_debug(tool_debug_params: ToolDebugRequest) -> ToolDebugResponse:
             node_trace = NodeTraceLog(
                 service_id=tool_id,
                 sid=span_context.sid,
-                app_id=span_context.app_id,
+                app_id=str(app_id) if span_context.app_id else "",
                 uid=span_context.uid,
                 chat_id=span_context.sid,
                 sub="spark-link",
