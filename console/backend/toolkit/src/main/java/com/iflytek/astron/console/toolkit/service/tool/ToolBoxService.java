@@ -527,6 +527,9 @@ public class ToolBoxService extends ServiceImpl<ToolBoxMapper, ToolBox> {
         // Parameter validation
         urlCheckTool.checkUrl(toolBoxDto.getEndPoint());
 
+        // 兼容java版的工作流启动时，将工具的测试、请求地址专项java版本
+        String toolEndPoint = SpringUtils.getBean(ApiUrl.class).autoTransferToolUrl(toolBoxDto.getEndPoint());
+        toolBoxDto.setEndPoint(toolEndPoint);
 
         OpenApiSchema openApiSchema = convertToolBoxVoToToolSchema(toolBoxDto, null);
 

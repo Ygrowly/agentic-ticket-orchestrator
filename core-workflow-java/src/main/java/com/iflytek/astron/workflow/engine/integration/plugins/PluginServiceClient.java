@@ -41,7 +41,7 @@ public class PluginServiceClient {
         return output;
     }
 
-    private TtsIntegration getTtsIntegration() {
+    public TtsIntegration getTtsIntegration() {
         for (TtsIntegration ttsIntegration : smartTTSIntegration) {
             if (Objects.equals(ttsIntegration.source(), ttsSource)) {
                 return ttsIntegration;
