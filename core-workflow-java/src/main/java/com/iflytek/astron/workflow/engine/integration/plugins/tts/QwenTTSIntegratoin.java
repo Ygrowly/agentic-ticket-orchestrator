@@ -149,13 +149,11 @@ public class QwenTTSIntegratoin implements TtsIntegration {
     }
 
     private byte[] downloadAudioFromUrl(String audioUrl) throws Exception {
-        OkHttpClient client = new OkHttpClient();
-
         Request request = new Request.Builder()
                 .url(audioUrl)
                 .build();
 
-        try (Response response = client.newCall(request).execute()) {
+        try (Response response = httpClient.newCall(request).execute()) {
             if (!response.isSuccessful()) {
                 throw new RuntimeException("下载音频文件失败: " + response.code());
             }

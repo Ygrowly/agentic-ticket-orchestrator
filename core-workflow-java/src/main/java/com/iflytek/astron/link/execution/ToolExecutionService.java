@@ -113,9 +113,12 @@ public class ToolExecutionService {
         response.setHeader(header);
 
         try {
+            // 转换server URL: 将Python aitools服务地址转换为当前Java服务地址
+            String serverUrl = normalizeServerUrl(toolDebugParams.getServer());
+            
             // 执行调试请求
             String result = httpExecutor.doCall(
-                    toolDebugParams.getServer(),
+                    serverUrl,
                     toolDebugParams.getMethod(),
                     toolDebugParams.getPath(),
                     toolDebugParams.getQuery(),
@@ -137,6 +140,20 @@ public class ToolExecutionService {
         }
 
         return response;
+    }
+
+    private String normalizeServerUrl(String serverUrl) {
+        if (serverUrl == null || serverUrl.isEmpty()) {
+            return serverUrl;
+        }
+        
+        // 将Python aitools服务地址(core-aitools:18668)转换为当前Java服务地址(localhost:7880)
+        if (serverUrl.contains("core-aitools:18668")) {
+            serverUrl = serverUrl.replace("core-aitools:18668", "localhost:7880");
+            log.info("Normalized server URL from core-aitools:18668 to localhost:7880");
+        }
+        
+        return serverUrl;
     }
 
     // 辅助方法

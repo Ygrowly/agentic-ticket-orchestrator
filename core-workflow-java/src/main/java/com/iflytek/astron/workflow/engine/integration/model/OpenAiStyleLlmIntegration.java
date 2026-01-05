@@ -28,6 +28,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Function;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * 基于OpenAI接口风格的LLM 交互集成
@@ -41,10 +43,10 @@ import java.util.function.Function;
 @Component
 public class OpenAiStyleLlmIntegration {
     // 使用正则表达式分别提取域名和路径部分
-    final static java.util.regex.Pattern PATTERN = java.util.regex.Pattern.compile("^(https?://[^/]+)(/.*)?$");
+    final static Pattern PATTERN = Pattern.compile("^(https?://[^/]+)(/.*)?$");
 
     private OpenAiApi initClient(String key, String apiUrl) {
-        java.util.regex.Matcher matcher = PATTERN.matcher(apiUrl);
+        Matcher matcher = PATTERN.matcher(apiUrl);
 
         String baseUrl;
         String basePath = null;

@@ -15,7 +15,7 @@ import java.util.Map;
 import java.util.Queue;
 
 /**
- * 调用python的 aitools 服务，实现工具的能力调用
+ * 调用python版内置的 aitools 服务/Java 版的 link 服务，实现工具的能力调用
  *
  * @author YiHui
  * @date 2025/12/4

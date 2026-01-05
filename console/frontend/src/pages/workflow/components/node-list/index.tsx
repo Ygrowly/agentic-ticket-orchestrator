@@ -67,7 +67,7 @@ const NodeList: React.FC<NodeListProps> = ({
           <div
             className="h-full overflow-hidden"
             style={{
-              width: openNodeList ? '10%' : 0,
+              width: openNodeList ? '20%' : 0,
               minWidth: '160px',
             }}
           >
