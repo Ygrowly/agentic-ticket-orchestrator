@@ -50,11 +50,27 @@ public class ToolCrudService extends ServiceImpl<ToolMapper, ToolEntity> {
     }
 
     public List<ToolEntity> getTools(List<ToolEntity> tools) {
-        // 实现获取工具逻辑
+        if (tools == null || tools.isEmpty()) {
+            return new ArrayList<>();
+        }
+        
         List<ToolMapper.ToolIdQuery> query = new ArrayList<>();
         for (ToolEntity tool : tools) {
-            query.add(new ToolMapper.ToolIdQuery(tool.getToolId(), tool.getVersion()));
+            if (tool.getVersion() != null) {
+                query.add(new ToolMapper.ToolIdQuery(tool.getToolId(), tool.getVersion()));
+            } else {
+                query.add(new ToolMapper.ToolIdQuery(tool.getToolId(), null));
+            }
         }
         return toolMapper.selectByToolIdAndVersions(query);
+    }
+
+    public List<ToolEntity> getToolsByToolId(String appId, String toolId) {
+        QueryWrapper<ToolEntity> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("app_id", appId)
+                    .eq("tool_id", toolId)
+                    .eq("is_deleted", 0)
+                    .orderByDesc("version");
+        return toolMapper.selectList(queryWrapper);
     }
 }

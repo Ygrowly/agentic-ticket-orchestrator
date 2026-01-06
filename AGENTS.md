@@ -4,7 +4,7 @@ This file provides guidance to Qoder (qoder.com) when working with code in this 
 
 ## Project Overview
 
-**AI Podcast Workshop (AI 播客工坊)** is an AI podcast generation platform built on top of iFlyTek's AstronAgent. It converts text content into podcast-style scripts using DeepSeek LLM and generates high-quality audio using iFlyTek's ultra-realistic voice synthesis technology through a visual workflow orchestration system.
+**PaiFlow (派派工作流)** is an enterprise-grade AI Agent workflow orchestration platform. It enables users to visually orchestrate large language model nodes, tool nodes, and process logic through an intuitive interface. The platform supports complex AI workflows including LLM integration, plugin execution, and conditional branching.
 
 ## Build & Test Commands
 
@@ -389,3 +389,31 @@ curl http://localhost:7880/health           # Python
 - **Python Implementation**: `core/workflow/` - Reference for Java development
 - **Java Implementation**: `core-workflow-java/` - Development version
 - **Java README**: `core-workflow-java/README.md` - Java-specific guide
+
+## Java Coding Standards
+
+### Import规范
+- **必须使用 import 语句**导入类，禁止使用全限定类名（如 `java.util.regex.Matcher`）
+- 例外：只有在类名冲突无法避免时才使用全限定名
+- 示例：
+  ```java
+  // ✅ 正确
+  import java.util.regex.Matcher;
+  Matcher matcher = pattern.matcher(text);
+  
+  // ❌ 错误
+  java.util.regex.Matcher matcher = pattern.matcher(text);
+  ```
+
+### 代码风格
+- **不要添加注释**，除非用户明确要求
+- **使用 Lombok** 简化代码（@Data, @Slf4j, @Builder 等）
+- **遵循现有代码**的命名和格式约定
+- **日志规范**：使用 `@Slf4j` 和 `log.info/warn/error`
+- **异常处理**：优先使用业务异常类，记录详细日志
+
+### 命名规范
+- 类名：大驼峰（PascalCase）
+- 方法/变量：小驼峰（camelCase）
+- 常量：全大写下划线分隔（UPPER_SNAKE_CASE）
+- Service 方法：动词开头（createVersion, getLatestVersion）

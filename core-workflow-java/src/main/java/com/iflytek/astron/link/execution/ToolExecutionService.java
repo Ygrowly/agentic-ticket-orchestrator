@@ -37,40 +37,39 @@ public class ToolExecutionService {
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     public HttpToolRunResponse httpRun(HttpToolRunRequest runParams) {
-        // 实现 HTTP 工具执行逻辑
-        // 这里迁移了 Python 版本中的 http_run 函数逻辑
         HttpToolRunResponse response = new HttpToolRunResponse();
         HttpToolRunResponse.HttpRunResponseHeader header = new HttpToolRunResponse.HttpRunResponseHeader();
 
-        // 提取请求参数
         String appId = extractAppId(runParams);
         String uid = extractUid(runParams);
         String sid = extractSid(runParams);
+        
+        log.info("httpRun started - appId: {}, uid: {}, sid: {}", appId, uid, sid);
 
-        // 设置响应头
         header.setCode(LinkErrorCode.SUCCESSES.getCode());
         header.setMessage(LinkErrorCode.SUCCESSES.getMessage());
         header.setSid(sid != null ? sid : "sid-" + System.currentTimeMillis());
         response.setHeader(header);
 
         try {
-            // 验证请求参数
             String validateErr = validateRequest(runParams);
             if (validateErr != null) {
+                log.warn("Validation failed: {}", validateErr);
                 return handleValidationError(validateErr, sid);
             }
 
-            // 提取工具参数
             String toolId = runParams.getParameter().toolId();
             String operationId = runParams.getParameter().operationId();
             String version = runParams.getParameter().version();
             if (version == null || version.isEmpty()) {
                 version = LinkConstants.DEF_VER;
             }
+            
+            log.info("Executing tool - toolId: {}, operationId: {}, version: {}", toolId, operationId, version);
 
-            // 获取工具schema
             ToolSchemaResult schemaResult = getToolSchema(appId, toolId, operationId, version);
             if (schemaResult.errorResponse != null) {
+                log.error("Failed to get tool schema - toolId: {}", toolId);
                 return schemaResult.errorResponse;
             }
 
@@ -81,11 +80,11 @@ public class ToolExecutionService {
                 LinkErrorCode errorCode = schemaResult.operationIdSchema == null ?
                         LinkErrorCode.TOOL_NOT_EXIST_ERR :
                         LinkErrorCode.OPERATION_ID_NOT_EXIST_ERR;
+                log.error("Tool or operation not found: {}", message);
                 return handleCustomError(errorCode, message, sid, toolId, schemaResult.toolType);
             }
 
-            // 处理请求执行
-            return handleRequestExecution(
+            HttpToolRunResponse result = handleRequestExecution(
                     schemaResult.operationIdSchema,
                     schemaResult.toolType,
                     schemaResult.openApiSchema,
@@ -95,28 +94,32 @@ public class ToolExecutionService {
                     version,
                     sid
             );
+            log.info("httpRun completed successfully - toolId: {}, operationId: {}", toolId, operationId);
+            return result;
         } catch (Exception e) {
+            log.error("httpRun failed - appId: {}, error: {}", appId, e.getMessage(), e);
             return handleGeneralException(e, sid);
         }
     }
 
 
     public ToolDebugResponse toolDebug(ToolDebugRequest toolDebugParams) {
-        // 实现工具调试逻辑
-        // 这里迁移了 Python 版本中的 tool_debug 函数逻辑
         ToolDebugResponse response = new ToolDebugResponse();
         ToolDebugResponse.ToolDebugResponseHeader header = new ToolDebugResponse.ToolDebugResponseHeader();
         String sid = "sid-" + System.currentTimeMillis();
+        
+        log.info("toolDebug started - server: {}, method: {}, sid: {}", 
+                toolDebugParams.getServer(), toolDebugParams.getMethod(), sid);
+        
         header.setCode(LinkErrorCode.SUCCESSES.getCode());
         header.setMessage(LinkErrorCode.SUCCESSES.getMessage());
         header.setSid(sid);
         response.setHeader(header);
 
         try {
-            // 转换server URL: 将Python aitools服务地址转换为当前Java服务地址
             String serverUrl = normalizeServerUrl(toolDebugParams.getServer());
+            log.info("Normalized server URL: {} -> {}", toolDebugParams.getServer(), serverUrl);
             
-            // 执行调试请求
             String result = httpExecutor.doCall(
                     serverUrl,
                     toolDebugParams.getMethod(),
@@ -126,13 +129,15 @@ public class ToolExecutionService {
                     toolDebugParams.getBody()
             );
 
-            // 设置响应数据
+            log.info("toolDebug call successful, response length: {}", result.length());
+            
             Map<String, Object> payload = new HashMap<>();
             Map<String, Object> text = new HashMap<>();
             text.put("text", result);
             payload.put("text", text);
             response.setPayload(payload);
         } catch (Exception e) {
+            log.error("toolDebug failed - server: {}, error: {}", toolDebugParams.getServer(), e.getMessage(), e);
             header.setCode(LinkErrorCode.COMMON_ERR.getCode());
             header.setMessage("Error: " + e.getMessage());
             response.setHeader(header);
@@ -227,8 +232,9 @@ public class ToolExecutionService {
     }
 
     private ToolSchemaResult getToolSchema(String appId, String toolId, String operationId, String version) {
+        log.info("Getting tool schema - appId: {}, toolId: {}, operationId: {}, version: {}", 
+                appId, toolId, operationId, version);
         try {
-            // 构造查询条件
             List<ToolEntity> toolList = new ArrayList<>();
             ToolEntity queryTool = new ToolEntity();
             queryTool.setAppId(appId);
@@ -237,30 +243,32 @@ public class ToolExecutionService {
             queryTool.setIsDeleted(LinkConstants.DEF_DEL);
             toolList.add(queryTool);
 
-            // 查询工具
             List<ToolEntity> tools = toolCrudService.getTools(toolList);
 
             if (tools.isEmpty()) {
+                log.warn("Tool not found - toolId: {}, version: {}", toolId, version);
                 return new ToolSchemaResult(null, null, null, null);
             }
 
             ToolEntity tool = tools.get(0);
             Map<String, Object> openApiSchema = objectMapper.readValue(tool.getOpenApiSchema(), Map.class);
 
-            // 根据OpenAPI schema中的信息确定toolType
             @SuppressWarnings("unchecked")
             Map<String, Object> info = (Map<String, Object>) openApiSchema.get("info");
             boolean isOfficial = info != null && "true".equals(String.valueOf(info.get("x-is-official")));
             String toolType = isOfficial ? System.getenv(LinkConstants.OFFICIAL_TOOL_KEY) : System.getenv(LinkConstants.THIRD_TOOL_KEY);
             if (toolType == null) {
-                toolType = isOfficial ? "official" : "third"; // 默认值
+                toolType = isOfficial ? "official" : "third";
             }
 
-            // 解析OpenAPI schema以获取operation schema
             Map<String, Object> operationIdSchema = parseOpenApiSchema(openApiSchema, operationId);
+            
+            log.info("Tool schema retrieved - toolId: {}, toolType: {}, hasOperation: {}", 
+                    toolId, toolType, operationIdSchema != null);
 
             return new ToolSchemaResult(operationIdSchema, toolType, openApiSchema, null);
         } catch (Exception e) {
+            log.error("Failed to get tool schema - toolId: {}, error: {}", toolId, e.getMessage(), e);
             HttpToolRunResponse errorResponse = handleGeneralException(e, null);
             return new ToolSchemaResult(null, null, null, errorResponse);
         }
@@ -280,33 +288,35 @@ public class ToolExecutionService {
             Map<String, Object> messageHeader,
             Map<String, Object> messageQuery,
             String toolId,
-            String version) throws Exception {
-        // 检查是否有安全配置
+            String version,
+            String appId) throws Exception {
         Object securityObj = operationIdSchema.get("security");
         if (securityObj == null) {
+            log.debug("No security configuration for toolId: {}", toolId);
             return;
         }
 
-        // 获取安全类型
         String securityType = (String) operationIdSchema.get("security_type");
         if (securityType == null || securityType.isEmpty()) {
+            log.debug("No security type specified for toolId: {}", toolId);
             return;
         }
+        
+        log.info("Processing authentication - toolId: {}, securityType: {}", toolId, securityType);
 
-        // 从Redis获取工具配置
-        Map<String, Object> redisCache = redisService.getToolConfig(toolId, version);
+        Map<String, Object> redisCache = redisService.getToolConfig(toolId, version, appId);
         if (redisCache == null) {
-            throw new Exception("security: get redis_cache is none!");
+            log.error("Config not found for toolId: {}, version: {}", toolId, version);
+            throw new Exception("security: get tool config is none!");
         }
 
-        // 获取认证信息
         @SuppressWarnings("unchecked")
         Map<String, Object> authInfo = (Map<String, Object>) redisCache.get("authentication");
         if (authInfo == null) {
+            log.error("Authentication info not found in redis for toolId: {}", toolId);
             throw new Exception("security: redis_cache get authentication is none!");
         }
 
-        // 根据安全类型处理认证
         @SuppressWarnings("unchecked")
         Map<String, Object> securityScheme = (Map<String, Object>) ((Map<String, Object>) ((Map<String, Object>) openApiSchema.get("components"))
                 .get("securitySchemes")).get(securityType);
@@ -314,7 +324,6 @@ public class ToolExecutionService {
         if (securityScheme != null) {
             String type = (String) securityScheme.get("type");
 
-            // API Key认证
             if ("apiKey".equals(type)) {
                 @SuppressWarnings("unchecked")
                 Map<String, Object> apiKeyDict = (Map<String, Object>) authInfo.get("apiKey");
@@ -322,19 +331,20 @@ public class ToolExecutionService {
                     String inLocation = (String) securityScheme.get("in");
                     if ("header".equals(inLocation)) {
                         messageHeader.putAll(apiKeyDict);
+                        log.info("Added API key to header for toolId: {}", toolId);
                     } else if ("query".equals(inLocation)) {
                         messageQuery.putAll(apiKeyDict);
+                        log.info("Added API key to query for toolId: {}", toolId);
                     }
                 }
             }
-            // Bearer Token认证
             else if ("http".equals(type)) {
                 String scheme = (String) securityScheme.get("scheme");
                 if ("bearer".equals(scheme)) {
-                    // 获取Bearer Token
                     String bearerToken = (String) authInfo.get("bearerToken");
                     if (bearerToken != null && !bearerToken.isEmpty()) {
                         messageHeader.put("Authorization", "Bearer " + bearerToken);
+                        log.info("Added Bearer token for toolId: {}", toolId);
                     }
                 }
             }
@@ -351,19 +361,22 @@ public class ToolExecutionService {
             String version,
             String sid) {
         try {
-            // 获取消息参数
             Map<String, Object> message = runParams.getPayload().message();
 
-            // 解码消息参数
             Map<String, Object> messageHeader = decodeBase64Json((String) message.get("header"));
             Map<String, Object> messageQuery = decodeBase64Json((String) message.get("query"));
             Map<String, Object> path = decodeBase64Json((String) message.get("path"));
             Map<String, Object> body = decodeBase64Json((String) message.get("body"));
+            
+            log.info("Decoded request params - header size: {}, query size: {}, body size: {}", 
+                    messageHeader.size(), messageQuery.size(), body.size());
 
-            // 处理认证
             try {
-                processAuthentication(openApiSchema, operationIdSchema, messageHeader, messageQuery, toolId, version);
+                String appId = extractAppId(runParams);
+                processAuthentication(openApiSchema, operationIdSchema, messageHeader, messageQuery, toolId, version, appId);
+                log.info("Authentication processed for toolId: {}", toolId);
             } catch (Exception authErr) {
+                log.error("Authentication failed for toolId: {}, error: {}", toolId, authErr.getMessage());
                 String errMsg = authErr.getMessage();
                 if (errMsg != null && errMsg.contains("Security type")) {
                     return handleCustomError(LinkErrorCode.OPENAPI_AUTH_TYPE_ERR, LinkErrorCode.OPENAPI_AUTH_TYPE_ERR.getMessage(), sid, toolId, toolType);
@@ -371,14 +384,17 @@ public class ToolExecutionService {
                 throw authErr;
             }
 
-            // 执行HTTP请求
             String serverUrl = (String) operationIdSchema.get("server_url");
             String method = (String) operationIdSchema.get("method");
             String queryPath = (String) operationIdSchema.get("path");
+            
+            log.info("Executing HTTP call - url: {}{}, method: {}", serverUrl, queryPath, method);
 
             String result = httpExecutor.doCall(serverUrl + queryPath, method, path, messageQuery, messageHeader, body);
+            
+            log.info("HTTP call successful - toolId: {}, operationId: {}, response length: {}", 
+                    toolId, operationId, result.length());
 
-            // 构造成功响应
             HttpToolRunResponse response = new HttpToolRunResponse();
             HttpToolRunResponse.HttpRunResponseHeader header = new HttpToolRunResponse.HttpRunResponseHeader();
             header.setCode(LinkErrorCode.SUCCESSES.getCode());
@@ -394,6 +410,8 @@ public class ToolExecutionService {
 
             return response;
         } catch (Exception e) {
+            log.error("Request execution failed - toolId: {}, operationId: {}, error: {}", 
+                    toolId, operationId, e.getMessage(), e);
             return handleGeneralException(e, sid);
         }
     }
@@ -422,55 +440,58 @@ public class ToolExecutionService {
      */
     @SuppressWarnings("unchecked")
     private Map<String, Object> parseOpenApiSchema(Map<String, Object> openApiSchema, String operationId) {
+        log.info("Parsing OpenAPI schema for operationId: {}", operationId);
         Map<String, Object> operationSchema = new HashMap<>();
 
         try {
-            // 获取servers信息
             List<Map<String, Object>> servers = (List<Map<String, Object>>) openApiSchema.get("servers");
             if (servers != null && !servers.isEmpty()) {
                 Map<String, Object> server = servers.get(0);
-                operationSchema.put("server_url", server.get("url"));
+                String serverUrl = (String) server.get("url");
+                operationSchema.put("server_url", serverUrl);
+                log.debug("Server URL found: {}", serverUrl);
             } else {
                 operationSchema.put("server_url", "");
+                log.warn("No server URL found in OpenAPI schema");
             }
 
-            // 获取paths信息
             Map<String, Object> paths = (Map<String, Object>) openApiSchema.get("paths");
             if (paths != null) {
-                // 遍历所有路径找到匹配的操作
+                log.debug("Parsing {} paths to find operationId: {}", paths.size(), operationId);
+                boolean found = false;
+                
                 for (Map.Entry<String, Object> pathEntry : paths.entrySet()) {
                     Map<String, Object> pathItem = (Map<String, Object>) pathEntry.getValue();
 
-                    // 遍历所有HTTP方法
                     for (Map.Entry<String, Object> methodEntry : pathItem.entrySet()) {
                         String method = methodEntry.getKey().toLowerCase();
                         Map<String, Object> operation = (Map<String, Object>) methodEntry.getValue();
 
-                        // 检查operationId是否匹配
                         if (operationId.equals(operation.get("operationId"))) {
                             operationSchema.put("method", method);
                             operationSchema.put("path", pathEntry.getKey());
+                            found = true;
+                            
+                            log.info("Operation found - operationId: {}, method: {}, path: {}", 
+                                    operationId, method, pathEntry.getKey());
 
-                            // 获取安全信息
                             Object security = operation.get("security");
                             if (security != null) {
                                 operationSchema.put("security", security);
 
-                                // 获取安全类型
                                 if (security instanceof List) {
                                     List<?> securityList = (List<?>) security;
                                     if (!securityList.isEmpty() && securityList.get(0) instanceof Map) {
                                         Map<?, ?> securityMap = (Map<?, ?>) securityList.get(0);
                                         if (!securityMap.isEmpty()) {
-                                            // 获取第一个键作为安全类型
                                             String securityType = securityMap.keySet().iterator().next().toString();
                                             operationSchema.put("security_type", securityType);
+                                            log.info("Security type found: {}", securityType);
                                         }
                                     }
                                 }
                             }
 
-                            // 获取其他相关信息
                             Object requestBody = operation.get("requestBody");
                             if (requestBody != null) {
                                 operationSchema.put("requestBody", requestBody);
@@ -479,14 +500,23 @@ public class ToolExecutionService {
                             break;
                         }
                     }
+                    if (found) break;
                 }
+                
+                if (!found) {
+                    log.error("Operation not found in paths - operationId: {}", operationId);
+                }
+            } else {
+                log.error("No paths found in OpenAPI schema");
             }
         } catch (Exception e) {
-            // 如果解析失败，使用默认值
+            log.error("Error parsing OpenAPI schema for operationId: {}, error: {}", 
+                    operationId, e.getMessage(), e);
             operationSchema.put("server_url", "");
             operationSchema.put("method", "GET");
         }
-
+        
+        log.debug("Parsed operation schema: {}", operationSchema.keySet());
         return operationSchema;
     }
 

@@ -119,10 +119,15 @@ public class Tool {
                 
                 if ("object".equals(parameterType)) {
                     // Recursively process nested objects
-                    @SuppressWarnings("unchecked")
-                    Map<String, Object> nestedActionInput = actionInput != null ? 
-                        (Map<String, Object>) actionInput.getOrDefault(parameterName, new HashMap<>()) : 
-                        new HashMap<>();
+                    Map<String, Object> nestedActionInput = new HashMap<>();
+                    if (actionInput != null) {
+                        Object nestedValue = actionInput.getOrDefault(parameterName, new HashMap<>());
+                        if (nestedValue instanceof Map) {
+                            @SuppressWarnings("unchecked")
+                            Map<String, Object> nestedMap = (Map<String, Object>) nestedValue;
+                            nestedActionInput = nestedMap;
+                        }
+                    }
                     Map<String, Object> nestedProperties = assembleBody(parameterDetail, nestedActionInput, businessInput);
                     properties.put(parameterName, nestedProperties);
                 } else {
