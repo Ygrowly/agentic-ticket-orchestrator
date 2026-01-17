@@ -39,17 +39,18 @@ public abstract class AbstractNodeExecutor implements NodeExecutor {
         int executeTime = node.getExecutedCount().addAndGet(1);
         RetryConfig retryConfig = node.getData().getRetryConfig();
         if (retryConfig == null) {
-            // 没有重试相关配置，直接返回
+            // 没有重试相关配置，直接执行（无超时控制）
             return this.doExecute(nodeState);
         }
 
+        // 有配置就使用超时控制（无论是否重试）
         if (!BooleanUtil.isTrue(retryConfig.getShouldRetry())) {
-            // 不支持重试的场景
+            // 不支持重试，但支持超时控制
             return this.doExecuteWithTimeout(nodeState, retryConfig);
         }
 
+        // 支持重试 + 超时控制
         while (true) {
-            // 支持错误重试的场景
             NodeRunResult res = this.doExecuteWithTimeout(nodeState, retryConfig);
             NodeExecStatusEnum executeRes = res.getStatus();
             if (executeRes.isSuccess()) {

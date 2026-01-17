@@ -6,6 +6,7 @@ import com.alibaba.fastjson2.JSONArray;
 import com.alibaba.fastjson2.JSONObject;
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,7 +30,7 @@ public class VariablePool {
      * Key: "node-id.output-name" (e.g., "node-start::001.user_input")
      * Value: actual output value
      */
-    private final Map<String, Map<String, Object>> variables = new HashMap<>();
+    private final Map<String, Map<String, Object>> variables = new ConcurrentHashMap<>();
 
     /**
      * Set a variable in the pool
@@ -50,7 +51,7 @@ public class VariablePool {
             value = JSON.parseObject(JSON.toJSONString(value));
         }
 
-        variables.computeIfAbsent(nodeId, k -> new HashMap<>()).put(outputName, value);
+        variables.computeIfAbsent(nodeId, k -> new ConcurrentHashMap<>()).put(outputName, value);
     }
 
     /**

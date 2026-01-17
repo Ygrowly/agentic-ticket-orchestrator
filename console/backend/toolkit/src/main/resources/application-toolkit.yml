@@ -22,7 +22,7 @@ api:
     tenantId: ${TENANT_ID:tenantId}
     tenantKey: ${TENANT_KEY:tenantKey}
     tenantSecret: ${TENANT_SECRET:tenantSecret}
-    toolUrl: ${TOOL_URL:http://127.0.0.1:18888}
+    toolUrl: ${TOOL_URL:http://127.0.0.1:7880}
     toolRpaUrl: ${TOOL_RPA_URL:http://127.0.0.1:17198}
     workflow: ${WORKFLOW_URL:http://127.0.0.1:7880}
     sparkDB: ${SPARK_DB_URL:http://127.0.0.1:7990}
