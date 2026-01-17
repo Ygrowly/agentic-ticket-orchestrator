@@ -139,8 +139,59 @@ public class WorkflowEngine {
             }
         }
 
-        // todo 链路完整的校验
+        // 环路检测 (Loop Detection)
+        // 使用 Kahn 算法 (基于入度的拓扑排序) 检测图中是否存在环
+        if (hasCycle(workflowDSL)) {
+            throw new IllegalStateException("Invalid workflow DSL: cycle detected");
+        }
     }
+
+    /**
+     * Check for cycles in the workflow graph using Kahn's algorithm
+     */
+    private boolean hasCycle(WorkflowDSL workflowDSL) {
+        Map<String, Integer> inDegree = new HashMap<>();
+        Map<String, List<String>> adjList = new HashMap<>();
+
+        // Initialize in-degrees and adjacency list
+        for (Node node : workflowDSL.getNodes()) {
+            inDegree.put(node.getId(), 0);
+            adjList.put(node.getId(), new ArrayList<>());
+        }
+
+        // Build graph
+        for (Edge edge : workflowDSL.getEdges()) {
+            String u = edge.getSource();
+            String v = edge.getTarget();
+            adjList.get(u).add(v);
+            inDegree.put(v, inDegree.getOrDefault(v, 0) + 1);
+        }
+
+        // Add nodes with 0 in-degree to queue
+        Queue<String> queue = new java.util.LinkedList<>();
+        for (String nodeId : inDegree.keySet()) {
+            if (inDegree.get(nodeId) == 0) {
+                queue.offer(nodeId);
+            }
+        }
+
+        int processedCount = 0;
+        while (!queue.isEmpty()) {
+            String u = queue.poll();
+            processedCount++;
+
+            for (String v : adjList.get(u)) {
+                inDegree.put(v, inDegree.get(v) - 1);
+                if (inDegree.get(v) == 0) {
+                    queue.offer(v);
+                }
+            }
+        }
+
+        // If processed count != total nodes, there is a cycle
+        return processedCount != workflowDSL.getNodes().size();
+    }
+
 
 
     /**

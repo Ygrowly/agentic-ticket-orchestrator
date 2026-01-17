@@ -61,7 +61,46 @@ public abstract class AbstractNodeExecutor implements NodeExecutor {
                 // 超过重试次数
                 return res;
             }
+            // 退避等待
+            this.handleRetryWait(retryConfig, executeTime);
             executeTime = node.getExecutedCount().addAndGet(1);
+        }
+    }
+
+    private void handleRetryWait(RetryConfig retryConfig, int retryCount) {
+        if (retryConfig.getRetryInterval() == null || retryConfig.getRetryInterval() <= 0) {
+            return;
+        }
+
+        long intervalMillis = (long) (retryConfig.getRetryInterval() * 1000);
+        long waitTime;
+
+        Integer strategy = retryConfig.getRetryStrategy();
+        if (strategy == null) {
+            strategy = 0; // Default to fixed
+        }
+
+        switch (strategy) {
+            case 0: // 固定间隔
+                waitTime = intervalMillis;
+                break;
+            case 1: // 线性退避
+                waitTime = intervalMillis * retryCount;
+                break;
+            case 2: // 指数退避
+                waitTime = (long) (intervalMillis * Math.pow(2, retryCount - 1));
+                break;
+            default:
+                waitTime = intervalMillis;
+        }
+
+        if (waitTime > 0) {
+            try {
+                Thread.sleep(waitTime);
+            } catch (InterruptedException e) {
+                log.warn("Retry wait interrupted", e);
+                Thread.currentThread().interrupt();
+            }
         }
     }
 

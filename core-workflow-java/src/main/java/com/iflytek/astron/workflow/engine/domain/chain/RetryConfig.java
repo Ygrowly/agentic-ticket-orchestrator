@@ -46,6 +46,18 @@ public class RetryConfig {
     @JsonProperty("customOutput")
     private Map<String, Object> customOutput;
 
+    /**
+     * 重试策略：0-固定间隔，1-线性退避，2-指数退避
+     */
+    @JsonProperty("retryStrategy")
+    private Integer retryStrategy;
+
+    /**
+     * 重试间隔，单位秒
+     */
+    @JsonProperty("retryInterval")
+    private Float retryInterval;
+
 
     public boolean timeOutEnabled() {
         return timeout != null && timeout > 0.001;
