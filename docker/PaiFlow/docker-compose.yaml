@@ -7,14 +7,14 @@ services:
 
   # MySQL Database
   mysql:
-    image: docker.m.daocloud.io/library/mysql:8.0
+    image: docker.m.daocloud.io/library/mysql:8.4
     container_name: paiflow-mysql
     command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-123456}
       MYSQL_DATABASE: paiflow-console
     ports:
-      - "3306:3306"
+      - "3307:3306"
     volumes:
       - mysql_data:/var/lib/mysql
       # Mount MySQL configuration
@@ -72,23 +72,23 @@ services:
   # ============================================================================
 
   # Console Frontend
-  # console-frontend:
-  #   build:
-  #     context: ../../
-  #     dockerfile: docker/PaiFlow/Dockerfile.frontend
-  #   container_name: paiflow-console-frontend
-  #   environment:
-  #     NGINX_PORT: 1881
-  #     # Configuration for runtime-config.js
-  #     CONSOLE_API_URL: /console-api
-  #     # Adjust these if you have authentication set up
-  #     CONSOLE_CASDOOR_URL: ""
-  #     CONSOLE_CASDOOR_ID: ""
-  #   ports:
-  #     - "3000:1881"
-  #   networks:
-  #     - paiflow-network
-  #   restart: always
+  console-frontend:
+    build:
+      context: ../../
+      dockerfile: docker/PaiFlow/Dockerfile.frontend
+    container_name: paiflow-console-frontend
+    environment:
+      NGINX_PORT: 1881
+      # Configuration for runtime-config.js
+      CONSOLE_API_URL: /console-api
+      # Adjust these if you have authentication set up
+      CONSOLE_CASDOOR_URL: ""
+      CONSOLE_CASDOOR_ID: ""
+    ports:
+      - "3000:1881"
+    networks:
+      - paiflow-network
+    restart: always
 
   # Console Backend (Hub)
   console-hub:
@@ -122,7 +122,7 @@ services:
       # Other settings
       SERVER_PORT: 8080
     ports:
-      - "8080:8080"
+      - "8081:8080"
     depends_on:
       mysql:
         condition: service_healthy
