@@ -1,33 +1,117 @@
-# PaiAgent - AI 播客生成平台
+# PaiFlow - 企业级 AI Agent 工作流编排平台
 
 <div align="center">
 
 [![License](https://img.shields.io/badge/license-apache2.0-blue.svg)](LICENSE)
-[![基于 AstronAgent](https://img.shields.io/badge/基于-AstronAgent-blue.svg)](https://github.com/iflytek/astron-agent)
+[![Java](https://img.shields.io/badge/Java-21-orange.svg)](https://openjdk.org/)
+[![Python](https://img.shields.io/badge/Python-3.11+-blue.svg)](https://www.python.org/)
+[![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.5-brightgreen.svg)](https://spring.io/)
 
 </div>
 
-## 📻 项目简介
+## 项目简介
 
-**AI Podcast Workshop（AI 播客工坊）** 是一个基于讯飞 AstronAgent 二次开发的 AI 播客生成平台，通过智能工作流编排，将用户输入的文本内容自动改写为播客风格的口播稿，并使用讯飞超拟人合成技术生成高质量语音。
+**PaiFlow（派派工作流）** 是一个企业级的 AI Agent 工作流编排平台，支持用户通过可视化方式编排大模型节点、工具节点和流程逻辑等。类似于 Dify、Coze、n8n 的可视化流程编排平台。
 
 ![](https://cdn.tobebetterjavaer.com/stutymore/README-20251028201755.png)
 
-### 核心能力
+### 核心特性
 
-- **AI 内容改写**：集成 DeepSeek 大模型，将普通文本智能改编为王二电台特色的播客风格逐字稿
-- **超拟人语音合成**：基于讯飞星火语音合成技术，生成自然流畅的播客音频
-- **可视化工作流编排**：通过 AstronAgent 的工作流引擎，实现"文本输入 → AI 改写 → 语音合成"的自动化流程
-- **开箱即用**：基于 Docker Compose 一键部署，无需复杂配置
+- **可视化工作流编排**：拖拽式节点编排，支持 LLM 节点、工具节点、条件分支等
+- **双引擎支持**：Python 版（FastAPI）和 Java 版（Spring Boot 3.5 + LangGraph4J）
+- **多模型集成**：支持 DeepSeek、OpenAI、通义千问等多种大模型
+- **实时流式输出**：基于 SSE 的实时推送，边跑边看结果
+- **插件生态**：支持 MCP 协议、工具注册系统
+- **一键部署**：Docker Compose 编排，开箱即用
 
-### 技术特点
+## 技术栈
 
-- ✅ 基于企业级开源项目 [AstronAgent](https://github.com/iflytek/astron-agent) 二次开发
-- ✅ 微服务架构，支持高可用部署
-- ✅ 支持自定义播客风格、发音人、语速等参数
-- ✅ 完整的工作流可视化调试能力
+### 后端技术
 
-## 🚀 快速开始
+| 技术 | 说明 |
+|------|------|
+| JDK 21 | 虚拟线程、Record 类型 |
+| Spring Boot 3.5 | 微服务框架 |
+| Spring AI 1.1 | 大模型统一抽象层 |
+| LangGraph4J | Agent 编排框架 |
+| FastAPI | Python 异步框架 |
+| Pydantic | 数据验证 |
+| MyBatis-Plus 3.5 | 持久层框架 |
+| PostgreSQL | 工作流数据存储 |
+| MySQL | 业务数据存储 |
+| Redis 7 | 分布式缓存 |
+| MinIO | 对象存储 |
+
+### 前端技术
+
+| 技术 | 说明 |
+|------|------|
+| React 18 | UI 框架 |
+| TypeScript | 类型安全 |
+| Ant Design 5 | UI 组件库 |
+| ReactFlow | 工作流可视化 |
+| Monaco Editor | 代码编辑器 |
+| Vite | 构建工具 |
+
+## 项目结构
+
+```
+PaiFlow/
+├── console/                    # 控制台服务
+│   ├── backend/                # Spring Boot 后端 (8080)
+│   └── frontend/               # React 前端 (1881)
+├── core/                       # Python 工作流引擎
+│   ├── agent/                  # Agent 核心实现
+│   ├── plugin/                 # 插件服务
+│   │   ├── aitools/            # AI 工具服务 (18668)
+│   │   └── link/               # 链路服务
+│   ├── workflow/               # 工作流引擎 (7880)
+│   └── common/                 # 公共模块
+├── core-workflow-java/         # Java 工作流引擎 (7880)
+├── docker/                     # Docker 部署配置
+├── docs/                       # 项目文档
+└── scripts/                    # 工具脚本
+```
+
+## 架构设计
+
+整个项目架构分为四层：
+
+```
+┌─────────────────────────────────────────────────────────┐
+│                    前端表达层 (React)                      │
+│     工作流编排 │ 节点配置 │ 执行监控 │ 日志查看               │
+└─────────────────────────────────────────────────────────┘
+                           │
+                           ▼
+┌─────────────────────────────────────────────────────────┐
+│                  控制台中枢层 (Hub)                        │
+│   用户鉴权 │ 模型管理 │ 流程元数据 │ 执行调度                │
+└─────────────────────────────────────────────────────────┘
+                           │
+           ┌───────────────┴───────────────┐
+           ▼                               ▼
+┌─────────────────────┐         ┌─────────────────────┐
+│  Python 工作流引擎   │         │   Java 工作流引擎    │
+│  (FastAPI + LangChain)│        │ (Spring Boot + LangGraph4J) │
+└─────────────────────┘         └─────────────────────┘
+           │                               │
+           └───────────────┬───────────────┘
+                           ▼
+┌─────────────────────────────────────────────────────────┐
+│                   底层基础设施层                           │
+│   PostgreSQL │ MySQL │ Redis │ MinIO │ Nginx             │
+└─────────────────────────────────────────────────────────┘
+```
+
+### 工作流引擎核心机制
+
+- **DSL 驱动**：解析 DSL 定义，构建内存中的工作流对象
+- **节点执行器解耦**：策略模式 + 工厂模式 + 责任链模式
+- **变量池隔离**：VariablePool 管理节点间数据传递
+- **拓扑排序**：DAG 链路解析，支持并行执行
+
+## 快速开始
 
 ### 环境要求
 
@@ -40,19 +124,16 @@
 
 ```bash
 # 1. 克隆项目
-git clone https://github.com/itwanger/astron-agent.git
-cd astron-agent/docker/astronAgent
+git clone https://github.com/itwanger/PaiFlow.git
+cd PaiFlow/docker
 
 # 2. 复制环境变量配置
 cp .env.example .env
 
-# 3. 编辑环境变量（可选，使用默认配置即可快速体验）
-vim .env
-
-# 4. 启动所有服务
+# 3. 启动所有服务
 docker compose up -d
 
-# 5. 查看服务状态
+# 4. 查看服务状态
 docker compose ps
 ```
 
@@ -63,62 +144,96 @@ docker compose ps
 - **应用前端**：http://localhost
 - **默认账户**：admin / 123
 
-## 📖 使用指南
+### 切换工作流引擎
 
-### 创建 AI 播客工作流
+Python 版和 Java 版共用端口 7880，修改 Hub 配置即可切换：
 
-1. 登录系统后，进入「工作流」页面
-2. 创建新工作流，配置以下节点：
-   - **开始节点**：定义用户输入
-   - **大模型节点**：配置 DeepSeek 模型，设置播客风格改写提示词
-   - **超拟人合成节点**：配置语音合成参数（发音人、语速等）
-   - **结束节点**：输出语音 URL
-3. 保存并运行工作流
-4. 输入文本，即可生成播客音频
+```yaml
+# 使用 Python 引擎
+workflow:
+  engine: python
+  endpoint: http://core-workflow:7880
 
-### 工作流配置示例
-
-```
-用户输入 → DeepSeek 改写 → 超拟人合成 → 输出音频
+# 使用 Java 引擎
+workflow:
+  engine: java
+  endpoint: http://core-workflow-java:7880
 ```
 
-**提示词示例**：
+## 核心功能
+
+### 1. AI 播客生成工作流
+
+用户输入主题 → LLM 改写为播客风格 → TTS 语音合成 → 输出音频
 
 ```
-# 角色
-你是沉默王二，一个嘴上贫、心里明白的技术博主。现在你主持一档叫「王二电台」的节目。
-
-# 任务
-把用户提供的原始内容改编成适合播客节目风格的逐字稿。
-要像电台聊天那样自然，有节奏、有情绪、有点梗。
-
-# 原始内容：{{input}}
+┌──────────┐     ┌──────────┐     ┌──────────┐     ┌──────────┐
+│  输入节点  │ ──▶ │  LLM节点  │ ──▶ │  TTS节点  │ ──▶ │  输出节点  │
+└──────────┘     └──────────┘     └──────────┘     └──────────┘
 ```
 
-## 🛠️ 技术架构
+### 2. 可视化工作流编排
 
-### 核心服务
+- 拖拽式节点编排
+- 实时预览和调试
+- 支持条件分支、并行执行
+- 节点参数可视化配置
+
+### 3. SSE 实时推送
+
+```java
+// LLM 节点执行时的回调
+LlmResVo llmOutput = modelServiceClient.chatCompletion(req, chatResponse -> {
+    // 每收到一个 token 就往前端推一次
+    nodeState.callback().onNodeProcess(
+        0,
+        node.getId(),
+        chatResponse.getResult().getOutput().getText(),
+        chatResponse.getResult().getOutput().getMetadata().get("reasoningContent")
+    );
+});
+```
+
+## 服务端口
 
 | 服务 | 说明 | 端口 |
 |------|------|------|
-| console-hub | 控制台后端服务 | 8080 |
-| console-frontend | 前端界面 | 1881 |
-| core-workflow | 工作流引擎 | 7880 |
-| core-aitools | AI 工具服务（包含超拟人合成） | 18668 |
 | nginx | 反向代理 | 80 |
-| postgres | PostgreSQL 数据库 | 5432 |
-| mysql | MySQL 数据库 | 3306 |
-| redis | Redis 缓存 | 6379 |
+| console-hub | 控制台后端 | 8080 |
+| console-frontend | 前端界面 | 1881 |
+| core-workflow | Python 工作流引擎 | 7880 |
+| core-workflow-java | Java 工作流引擎 | 7880 |
+| core-aitools | AI 工具服务 | 18668 |
+| postgres | PostgreSQL | 5432 |
+| mysql | MySQL | 3306 |
+| redis | Redis | 6379 |
 | minio | 对象存储 | 18998/18999 |
 
-### 数据库说明
+## 技术亮点
 
-- **PostgreSQL**：工作流数据、用户配置
-- **MySQL**：工具元数据、智能体配置
-  - `astron_console.tool_box`：工具注册表
-  - `spark-link.tools_schema`：工具 Schema 定义
+### JDK 21 虚拟线程
 
-## 🔧 常见问题
+```java
+try (var executor = Executors.newVirtualThreadPerTaskExecutor()) {
+    executor.submit(() -> executeNode(node, variablePool, callback));
+}
+```
+
+### Spring AI 多模型统一
+
+```java
+ChatClient chatClient = ChatClient.create(chatModel);
+Flux<ChatResponse> stream = chatClient.prompt()
+    .user(prompt)
+    .stream()
+    .chatResponse();
+```
+
+### 分布式追踪
+
+通过 OpenTelemetry 对整个工作流引擎进行埋点，精确回溯每个节点的耗时。
+
+## 常见问题
 
 ### 工作流执行失败？
 
@@ -128,30 +243,13 @@ docker compose ps
 2. **服务地址**：超拟人合成服务地址应为 `http://core-aitools:18668`
 3. **app_id**：确保工具的 `app_id` 与工作流一致
 
-手动修复命令：
-
-```bash
-# 修复工具版本号和服务地址
-docker compose exec mysql mysql -uroot -proot123 spark-link -e "
-UPDATE tools_schema 
-SET version='V1.0', 
-    app_id='680ab54f',
-    open_api_schema = REPLACE(open_api_schema, 'https://core-aitools:18669', 'http://core-aitools:18668')
-WHERE tool_id='tool@8b2262bef821000';"
-
-# 重启相关服务
-docker compose restart core-link core-workflow
-```
-
 ### 容器重启后出现 502 错误？
-
-这是因为容器 IP 地址变化导致 Nginx 无法连接到 console-hub。解决方法：
 
 ```bash
 docker compose restart nginx
 ```
 
-### 如何查看服务日志？
+### 查看服务日志
 
 ```bash
 # 查看所有服务日志
@@ -162,22 +260,25 @@ docker compose logs -f console-hub
 docker compose logs -f core-workflow
 ```
 
-## 🤝 贡献指南
+## 学习资源
 
-本项目基于 [AstronAgent](https://github.com/iflytek/astron-agent) 二次开发。
+- **项目教程**：https://paicoding.com/column/13/1
+- **项目介绍**：https://javabetter.cn/zhishixingqiu/paiflow.html
+
+## 贡献指南
 
 如果您有任何建议或发现问题，欢迎提交 Issue 或 Pull Request。
 
-## 📄 开源协议
+## 开源协议
 
-本项目基于 Apache 2.0 协议开源，可自由商业使用。
+本项目基于 Apache 2.0 协议开源。
 
-## 🙏 致谢
+## 致谢
 
 - [讯飞 AstronAgent](https://github.com/iflytek/astron-agent) - 提供强大的智能体开发平台
-- [讯飞星火](https://www.xfyun.cn) - 提供大模型和语音合成能力
-- [DeepSeek](https://www.deepseek.com) - 提供高性能中文大模型
+- [Spring AI](https://spring.io/projects/spring-ai) - 大模型集成框架
+- [LangGraph4J](https://github.com/langgraph4j/langgraph4j) - Agent 编排框架
 
 ---
 
-**AI Podcast Workshop** - 让 AI 成为你的播客搭档 🎙️
+**PaiFlow** - 让 AI Agent 开发更简单
