@@ -125,7 +125,7 @@ PaiFlow/
 ```bash
 # 1. 克隆项目
 git clone https://github.com/itwanger/PaiFlow.git
-cd PaiFlow/docker
+cd PaiFlow/docker/PaiFlow
 
 # 2. 复制环境变量配置
 cp .env.example .env
@@ -141,10 +141,27 @@ docker compose ps
 
 启动完成后，访问以下地址：
 
-- **应用前端**：http://localhost
+- **应用前端**：http://localhost:3000
+- **控制台后端**：http://localhost:8081
+- **MinIO Console**：http://localhost:9001
 - **默认账户**：admin / 123
 
+如果你之前已经启动过旧版本 Docker 环境，`mysql_data` 持久卷里的旧表结构不会随着新 SQL 自动升级。这种情况下如果出现中文/emoji 乱码，执行：
+
+```bash
+./fix-docker-mysql-charset.sh
+```
+
+如果是全新安装且不需要保留旧数据，也可以直接删除旧卷后重新初始化：
+
+```bash
+docker compose down -v
+docker compose up -d
+```
+
 ### 切换工作流引擎
+
+当前 `docker/PaiFlow/docker-compose.yaml` 默认只启动 Java 工作流引擎 `core-workflow-java`。下面的配置说明是项目层面的引擎切换思路，如果要在 Docker 中切到 Python 版，还需要额外补充对应服务定义。
 
 Python 版和 Java 版共用端口 7880，修改 Hub 配置即可切换：
 
@@ -198,16 +215,12 @@ LlmResVo llmOutput = modelServiceClient.chatCompletion(req, chatResponse -> {
 
 | 服务 | 说明 | 端口 |
 |------|------|------|
-| nginx | 反向代理 | 80 |
-| console-hub | 控制台后端 | 8080 |
-| console-frontend | 前端界面 | 1881 |
-| core-workflow | Python 工作流引擎 | 7880 |
+| console-hub | 控制台后端 | 8081 |
+| console-frontend | 前端界面 | 3000 |
 | core-workflow-java | Java 工作流引擎 | 7880 |
-| core-aitools | AI 工具服务 | 18668 |
-| postgres | PostgreSQL | 5432 |
-| mysql | MySQL | 3306 |
+| mysql | MySQL | 3307 |
 | redis | Redis | 6379 |
-| minio | 对象存储 | 18998/18999 |
+| minio | 对象存储 | 9000/9001 |
 
 ## 技术亮点
 
@@ -243,10 +256,17 @@ Flux<ChatResponse> stream = chatClient.prompt()
 2. **服务地址**：超拟人合成服务地址应为 `http://core-aitools:18668`
 3. **app_id**：确保工具的 `app_id` 与工作流一致
 
-### 容器重启后出现 502 错误？
+### Docker 部署后中文或 emoji 乱码？
 
 ```bash
-docker compose restart nginx
+./fix-docker-mysql-charset.sh
+```
+
+如果不需要保留已有数据，也可以直接删除持久卷后重新初始化：
+
+```bash
+docker compose down -v
+docker compose up -d
 ```
 
 ### 查看服务日志
@@ -257,7 +277,7 @@ docker compose logs -f
 
 # 查看特定服务日志
 docker compose logs -f console-hub
-docker compose logs -f core-workflow
+docker compose logs -f core-workflow-java
 ```
 
 ## 学习资源

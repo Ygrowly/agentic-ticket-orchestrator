@@ -182,7 +182,7 @@ User Input (Text)
 
 ### Quick Start
 ```bash
-cd docker/astronAgent
+cd docker/PaiFlow
 cp .env.example .env
 docker compose up -d
 docker compose ps        # Check service status
@@ -190,20 +190,20 @@ docker compose logs -f   # View logs
 ```
 
 ### Access Points
-- Frontend: http://localhost (Nginx)
+- Frontend: http://localhost:3000
+- Console Hub: http://localhost:8081
 - Default credentials: admin / 123
-- MinIO Console: http://localhost:18998
+- MinIO Console: http://localhost:9001
 
 ### Service Ports
-- console-hub: 8080
-- console-frontend: 1881 (internal)
+- console-hub: 8081
+- console-frontend: 3000
 - core-workflow: 7880
 - core-aitools: 18668
-- nginx: 80
 - postgres: 5432
-- mysql: 3306
+- mysql: 3307
 - redis: 6379
-- minio: 18998 (console), 18999 (API)
+- minio: 9001 (console), 9000 (API)
 
 ### Common Issues
 
@@ -227,6 +227,17 @@ docker compose restart core-link core-workflow
 **502 Bad Gateway after container restart:**
 ```bash
 docker compose restart nginx
+```
+
+**Docker deployment shows garbled Chinese / emoji:**
+```bash
+./fix-docker-mysql-charset.sh
+```
+
+If you do not need to keep old data, rebuild the MySQL volume:
+```bash
+docker compose down -v
+docker compose up -d
 ```
 
 ## Code Quality Standards
