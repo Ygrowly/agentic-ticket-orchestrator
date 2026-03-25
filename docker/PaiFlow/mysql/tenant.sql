@@ -33,19 +33,19 @@ DROP TABLE IF EXISTS `tb_app`;
 CREATE TABLE `tb_app` (
   `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
   `registration_time` datetime DEFAULT NULL COMMENT '创建时间',
-  `app_id` varchar(32) CHARACTER SET utf8mb3 COLLATE utf8mb3_bin NOT NULL DEFAULT '' COMMENT '应用唯一标识',
-  `app_name` varchar(256) CHARACTER SET utf8mb3 COLLATE utf8mb3_bin DEFAULT NULL COMMENT '应用名称',
+  `app_id` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL DEFAULT '' COMMENT '应用唯一标识',
+  `app_name` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL COMMENT '应用名称',
   `dev_id` bigint DEFAULT NULL COMMENT '开发者id',
-  `channel_id` varchar(128) CHARACTER SET utf8mb3 COLLATE utf8mb3_bin DEFAULT NULL COMMENT '渠道id',
-  `source` varchar(32) CHARACTER SET utf8mb3 COLLATE utf8mb3_bin DEFAULT '' COMMENT '来源',
+  `channel_id` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL COMMENT '渠道id',
+  `source` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT '' COMMENT '来源',
   `is_disable` tinyint(1) DEFAULT NULL COMMENT '是否禁用(true禁用 false启用)',
-  `app_desc` varchar(521) CHARACTER SET utf8mb3 COLLATE utf8mb3_bin DEFAULT NULL COMMENT '应用描述',
+  `app_desc` varchar(521) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL COMMENT '应用描述',
   `is_delete` tinyint(1) DEFAULT NULL COMMENT '是否删除',
-  `extend` varchar(256) CHARACTER SET utf8mb3 COLLATE utf8mb3_bin DEFAULT '' COMMENT '扩展字段',
+  `extend` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT '' COMMENT '扩展字段',
   PRIMARY KEY (`app_id`),
   KEY `idx_registration_time` (`registration_time`),
   KEY `idx_dev_id` (`dev_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_bin COMMENT='应用主表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin COMMENT='应用主表';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -68,16 +68,16 @@ DROP TABLE IF EXISTS `tb_auth`;
 CREATE TABLE `tb_auth` (
   `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
   `registration_time` datetime DEFAULT NULL COMMENT '创建时间',
-  `app_id` varchar(32) CHARACTER SET utf8mb3 COLLATE utf8mb3_bin NOT NULL DEFAULT '' COMMENT '应用唯一标识',
-  `api_key` varchar(128) CHARACTER SET utf8mb3 COLLATE utf8mb3_bin NOT NULL DEFAULT '' COMMENT '鉴权key',
-  `api_secret` varchar(128) CHARACTER SET utf8mb3 COLLATE utf8mb3_bin DEFAULT NULL COMMENT '鉴权私钥',
+  `app_id` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL DEFAULT '' COMMENT '应用唯一标识',
+  `api_key` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL DEFAULT '' COMMENT '鉴权key',
+  `api_secret` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL COMMENT '鉴权私钥',
   `source` bigint DEFAULT NULL COMMENT '来源',
   `is_delete` tinyint(1) DEFAULT NULL COMMENT '是否删除',
-  `extend` varchar(256) CHARACTER SET utf8mb3 COLLATE utf8mb3_bin DEFAULT NULL COMMENT '扩展字段',
+  `extend` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL COMMENT '扩展字段',
   PRIMARY KEY (`app_id`,`api_key`),
   KEY `idx_registration_time` (`registration_time`),
   KEY `idx_api_key` (`api_key`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_bin COMMENT='应用关联的鉴权表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin COMMENT='应用关联的鉴权表';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --

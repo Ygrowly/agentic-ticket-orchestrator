@@ -50,7 +50,7 @@ CREATE TABLE `app` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `alias_id` (`alias_id`),
   KEY `idx_appid` (`alias_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COMMENT='app 信息';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='app 信息';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -78,7 +78,7 @@ CREATE TABLE `app_source` (
   `create_at` datetime NOT NULL,
   `update_at` datetime NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -117,7 +117,7 @@ CREATE TABLE `flow` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `uniq_group_id_version` (`group_id`,`version`),
   KEY `idx_flow_name` (`name`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -147,7 +147,7 @@ CREATE TABLE `license` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `lic_uk_appid_gid` (`app_id`,`group_id`),
   KEY `idx_app_id_group_id` (`app_id`,`group_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
