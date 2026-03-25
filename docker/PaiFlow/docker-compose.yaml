@@ -84,6 +84,9 @@ services:
       CONSOLE_CASDOOR_ID: ""
     ports:
       - "3000:1881"
+    depends_on:
+      console-hub:
+        condition: service_healthy
     networks:
       - paiflow-network
     restart: always

@@ -7,11 +7,12 @@ import WorkflowImportModal from './components/WorkflowImportModal';
 import { ImportOutlined, PlusOutlined } from '@ant-design/icons';
 
 import styles from './index.module.scss';
-import workflowIcon from '@/assets/imgs/workflow/workflow.png';
 interface MakeCreateModalProps {
   visible: boolean;
   onCancel: () => void;
 }
+
+const workflowIcon = '/workflow/workflow.png';
 
 const MakeCreateModal: React.FC<MakeCreateModalProps> = ({
   visible,
