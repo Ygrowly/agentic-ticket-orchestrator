@@ -20,6 +20,7 @@ import org.springframework.ai.openai.OpenAiChatOptions;
 import org.springframework.ai.openai.api.OpenAiApi;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Flux;
 
 import java.util.ArrayList;
@@ -111,9 +112,56 @@ public class OpenAiStyleLlmIntegration {
             Usage tokenUsage = lastResponse != null ? lastResponse.getMetadata().getUsage() : new EmptyUsage();
             return new LlmResVo(tokenUsage, response.toString(), reasoningContent.toString());
         } catch (Exception e) {
-            log.error("Error calling OpenAI API", e);
-            throw new RuntimeException("Failed to call OpenAI API", e);
+            String errorMessage = buildErrorMessage(e);
+            log.error("Error calling OpenAI API: {}", errorMessage, e);
+            throw new RuntimeException(errorMessage, e);
         }
+    }
+
+    private String buildErrorMessage(Exception e) {
+        Throwable rootCause = findRootCause(e);
+        Throwable actualException = rootCause != null ? rootCause : e;
+        if (actualException instanceof WebClientResponseException responseException) {
+            StringBuilder builder = new StringBuilder("LLM request failed: HTTP ")
+                    .append(responseException.getStatusCode().value())
+                    .append(" ")
+                    .append(responseException.getStatusText());
+            if (responseException.getStatusCode().is4xxClientError()) {
+                builder.append(", please check the model API key and endpoint configuration");
+            }
+
+            String responseBody = trimDetail(responseException.getResponseBodyAsString());
+            if (StringUtils.isNotBlank(responseBody)) {
+                builder.append(" - ").append(responseBody);
+            }
+            return builder.toString();
+        }
+
+        String message = trimDetail(actualException.getMessage());
+        if (StringUtils.isNotBlank(message)) {
+            return "LLM request failed: " + message;
+        }
+        return "LLM request failed";
+    }
+
+    private Throwable findRootCause(Throwable throwable) {
+        Throwable current = throwable;
+        while (current != null && current.getCause() != null && current.getCause() != current) {
+            current = current.getCause();
+        }
+        return current;
+    }
+
+    private String trimDetail(String detail) {
+        if (StringUtils.isBlank(detail)) {
+            return null;
+        }
+
+        String normalized = detail.replaceAll("\\s+", " ").trim();
+        if (normalized.length() <= 300) {
+            return normalized;
+        }
+        return normalized.substring(0, 300) + "...";
     }
 
     private Prompt buildPrompt(LlmReqBo req) {

@@ -1443,16 +1443,54 @@ public class WorkflowService extends ServiceImpl<WorkflowMapper, Workflow> {
         String response = OkHttpUtil.post(url, body);
         log.info("node debug, response = {}", response);
 
-        NodeDebugResponse nodeDebugResponse = null;
+        JSONObject responseObject;
         try {
-            nodeDebugResponse = JSON.parseObject(response, NodeDebugResponse.class);
+            responseObject = JSON.parseObject(response);
         } catch (Exception e) {
             throw new BusinessException(ResponseEnum.RESPONSE_FAILED, response);
         }
-        if (nodeDebugResponse.getCode() != 0) {
-            throw new BusinessException(ResponseEnum.RESPONSE_FAILED, nodeDebugResponse.getMessage());
+        if (responseObject == null || responseObject.isEmpty()) {
+            throw new BusinessException(ResponseEnum.RESPONSE_FAILED, "Node debug request returned an empty response");
+        }
+
+        Integer responseCode = responseObject.getInteger("code");
+        if (responseCode == null) {
+            throw new BusinessException(ResponseEnum.RESPONSE_FAILED, buildNodeDebugErrorMessage(responseObject, response));
+        }
+
+        NodeDebugResponse nodeDebugResponse = responseObject.to(NodeDebugResponse.class);
+        if (responseCode != 0) {
+            String errorMessage = StringUtils.defaultIfBlank(nodeDebugResponse.getMessage(),
+                    buildNodeDebugErrorMessage(responseObject, response));
+            throw new BusinessException(ResponseEnum.RESPONSE_FAILED, errorMessage);
         }
         return ApiResult.success(nodeDebugResponse.getData());
+    }
+
+    private String buildNodeDebugErrorMessage(JSONObject responseObject, String rawResponse) {
+        String message = responseObject.getString("message");
+        if (StringUtils.isNotBlank(message)) {
+            return message;
+        }
+
+        Integer status = responseObject.getInteger("status");
+        String error = responseObject.getString("error");
+        String path = responseObject.getString("path");
+        if (status != null || StringUtils.isNotBlank(error) || StringUtils.isNotBlank(path)) {
+            StringBuilder builder = new StringBuilder("Node debug request failed");
+            if (status != null) {
+                builder.append(": HTTP ").append(status);
+            }
+            if (StringUtils.isNotBlank(error)) {
+                builder.append(status != null ? " " : ": ").append(error);
+            }
+            if (StringUtils.isNotBlank(path)) {
+                builder.append(" (").append(path).append(")");
+            }
+            return builder.toString();
+        }
+
+        return StringUtils.defaultIfBlank(rawResponse, "Node debug request failed");
     }
 
     /**
