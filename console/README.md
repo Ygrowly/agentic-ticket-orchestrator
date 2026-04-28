@@ -1,6 +1,6 @@
-# Astron Console Module
+# Console Module
 
-The Astron Console module is a comprehensive web application that provides a user interface and backend services for managing AI agents, chatbots, and related functionalities. This module consists of both frontend and backend components built with modern technologies.
+The Console module provides the user interface and backend services for enterprise operations alert handling and ticket remediation workflows. It supports alert intake, exception classification, ticket creation, SOP and historical case retrieval, remediation recommendation, tool execution, and result feedback through visual Agent workflow orchestration.
 
 ## Architecture Overview
 
@@ -86,11 +86,11 @@ The frontend is a modern React application built with TypeScript and Vite.
 - **Routing**: React Router DOM 6.22.3
 
 ### Key Features
-- **Agent Creation**: Create and manage AI agents
-- **Bot Center**: Central hub for bot management
-- **Chat Interface**: Real-time chat functionality
-- **Workflow Management**: Visual workflow builder
-- **Plugin Store**: Marketplace for plugins and extensions
+- **Alert Workflow Management**: Build and manage alert-to-ticket remediation workflows
+- **Ticket Handling**: Track generated tickets, execution state, remediation context, and final results
+- **SOP and Case Retrieval**: Surface relevant SOPs and historical cases for each alert
+- **Workflow Management**: Visual workflow builder for LLM nodes, tool nodes, conditions, and fallback paths
+- **Plugin Store**: Marketplace for diagnostic, inspection, and remediation tools
 - **Space Management**: Multi-tenant workspace support
 - **Model Management**: AI model configuration and management
 
@@ -134,14 +134,15 @@ The frontend communicates with backend services through:
 
 ## Key Functionalities
 
-1. **AI Agent Management**: Create, configure, and deploy AI agents
-2. **Chat Interface**: Real-time conversations with AI agents
+1. **Alert Intake**: Receive operations alerts and normalize them into workflow inputs
+2. **Ticket Generation**: Create tickets with alert metadata, classification, and remediation context
 3. **Workflow Builder**: Visual workflow creation and management
-4. **Plugin Ecosystem**: Extensible plugin architecture
-5. **Multi-tenant Support**: Workspace and space management
-6. **Model Management**: AI model configuration and selection
-7. **User Management**: Authentication and authorization
-8. **Resource Management**: File and asset management
+4. **SOP and Historical Case Retrieval**: Retrieve handling knowledge for recommendation generation
+5. **Plugin Ecosystem**: Extensible plugin architecture for diagnostic and remediation tools
+6. **Multi-tenant Support**: Workspace and space management
+7. **Model Management**: AI model configuration and selection
+8. **User Management**: Authentication and authorization
+9. **Resource Management**: File and asset management
 
 ## Getting Started
 
@@ -165,4 +166,4 @@ npm run dev
 - **Frontend Configuration**: Environment-specific files in `frontend/`
 - **Docker Configuration**: Docker setup in `backend/docker/`
 
-This console module serves as the central interface for the Astron AI agent platform, providing comprehensive tools for agent creation, management, and interaction.
+This console module serves as the central interface for PaiFlow, providing comprehensive tools for alert remediation workflow design, ticket tracking, and operational result feedback.

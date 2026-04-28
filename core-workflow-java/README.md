@@ -1,5 +1,7 @@
 # Java Workflow 开发指南
 
+Java Workflow 是在企业运维告警与工单处置场景下的工作流执行引擎，负责执行告警接入、异常识别、工单生成、SOP / 历史案例检索、处置建议、工具检查和结果反馈等节点链路。
+
 ## 项目结构
 
 ```
@@ -103,7 +105,7 @@ docker run -d -p 7880:7880 -e OSS_ENDPOINT=http://host.docker.internal:9000 -e O
 - **StartNode**：流程起点，接收初始输入参数
 - **EndNode**：流程终点，生成最终输出结果
 - **LLMNode**：调用大语言模型（如DeepSeek）进行文本处理
-- **PluginNode**：调用插件工具（如讯飞语音合成）
+- **PluginNode**：调用插件工具（如巡检、诊断、SOP检索、工单回写）
 - **其他节点**：条件判断、循环控制等流程控制节点
 
 ## 工作流引擎执行机制
